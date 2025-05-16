@@ -1,0 +1,50 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Hizmet Düzenle{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="form-container">
+        <h1 class="form-title">Hizmet Düzenle</h1>
+        
+        <form method="POST" action="{{ url_for('admin_edit_service', id=service.id) }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label for="title" class="form-label">Başlık</label>
+                    {{ form.title(class="form-control", placeholder="Hizmet başlığı") }}
+                    {% if form.title.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mb-3">
+                    <label for="description" class="form-label">Açıklama</label>
+                    {{ form.description(class="form-control rich-editor", rows=5, placeholder="Hizmet açıklaması") }}
+                    {% if form.description.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mt-3">
+                    <button type="submit" class="btn btn-admin btn-admin-primary">
+                        <i class="fas fa-save me-2"></i> Kaydet
+                    </button>
+                    <a href="{{ url_for('admin_services') }}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times me-2"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

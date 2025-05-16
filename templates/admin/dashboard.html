@@ -1,0 +1,158 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Kontrol Paneli{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Kontrol Paneli</h1>
+        <div>
+            <a href="{{ url_for('index') }}" target="_blank" class="btn btn-outline-primary">
+                <i class="fas fa-external-link-alt me-2"></i> Siteyi Görüntüle
+            </a>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stats-card stats-card-primary">
+                <div class="stats-card-info">
+                    <h3>{{ message_count }}</h3>
+                    <p>Mesajlar</p>
+                </div>
+                <div class="stats-card-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stats-card stats-card-success">
+                <div class="stats-card-info">
+                    <h3>{{ service_count }}</h3>
+                    <p>Hizmetler</p>
+                </div>
+                <div class="stats-card-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stats-card stats-card-warning">
+                <div class="stats-card-info">
+                    <h3>{{ project_count }}</h3>
+                    <p>Makaleler</p>
+                </div>
+                <div class="stats-card-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stats-card stats-card-info">
+                <div class="stats-card-info">
+                    <h3>{{ expertise_count }}</h3>
+                    <p>Uzmanlık Alanları</p>
+                </div>
+                <div class="stats-card-icon">
+                    <i class="fas fa-gavel"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Latest Messages -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-envelope me-2"></i> Son Mesajlar</h5>
+                    <a href="{{ url_for('admin_messages') }}" class="btn btn-sm btn-outline-primary">Tümünü Görüntüle</a>
+                </div>
+                <div class="card-body">
+                    {% if latest_messages %}
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Gönderen</th>
+                                    <th>E-posta</th>
+                                    <th>Konu</th>
+                                    <th>Tarih</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for message in latest_messages %}
+                                <tr>
+                                    <td>{{ message.full_name }}</td>
+                                    <td>{{ message.email }}</td>
+                                    <td>{{ message.subject }}</td>
+                                    <td>{{ message.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                                    <td class="action-buttons">
+                                        <a href="{{ url_for('admin_view_message', id=message.id) }}" class="action-btn action-btn-view">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('admin_delete_message', id=message.id) }}" class="action-btn action-btn-delete delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-envelope-open fa-3x text-muted mb-3"></i>
+                        <p>Henüz mesaj bulunmuyor.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt me-2"></i> Hızlı İşlemler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-primary w-100 p-3">
+                                <i class="fas fa-file-alt mb-2 d-block" style="font-size: 24px;"></i>
+                                Yeni Makale Ekle
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{{ url_for('admin_services') }}" class="btn btn-outline-success w-100 p-3">
+                                <i class="fas fa-cogs mb-2 d-block" style="font-size: 24px;"></i>
+                                Hizmetleri Düzenle
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{{ url_for('admin_expertise') }}" class="btn btn-outline-warning w-100 p-3">
+                                <i class="fas fa-gavel mb-2 d-block" style="font-size: 24px;"></i>
+                                Uzmanlık Alanları
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{{ url_for('admin_profile') }}" class="btn btn-outline-info w-100 p-3">
+                                <i class="fas fa-user mb-2 d-block" style="font-size: 24px;"></i>
+                                Profili Düzenle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

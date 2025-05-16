@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" style="background-image: url('{{ url_for('static', filename='uploads/' + settings.homepage_image) if settings.homepage_image else 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80' }}');">
+    <div class="hero-content">
+        <h1 class="hero-title">{{ settings.homepage_title }}</h1>
+        <p class="hero-subtitle">{{ settings.homepage_subtitle }}</p>
+        <a href="{{ url_for('iletisim') }}" class="btn btn-primary">Bize Ulaşın</a>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="section">
+    <div class="section-content">
+        <h2 class="section-title">Hizmetlerimiz</h2>
+        <div class="services-grid">
+            {% for service in services %}
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h3 class="service-title">{{ service.title }}</h3>
+                <p class="service-description">{{ service.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="section" style="background-color: var(--light-color);">
+    <div class="section-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="mb-4">{{ settings.about_title }}</h2>
+                <p>{{ settings.about_content }}</p>
+                <a href="{{ url_for('hakkimizda') }}" class="btn btn-outline mt-3">Daha Fazla</a>
+            </div>
+            <div class="col-lg-6">
+                {% if settings.about_image %}
+                <img src="{{ url_for('static', filename='uploads/' + settings.about_image) }}" alt="{{ settings.about_title }}" class="img-fluid rounded">
+                {% else %}
+                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="{{ settings.about_title }}" class="img-fluid rounded">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Articles Section -->
+<section class="section">
+    <div class="section-content">
+        <h2 class="section-title">Son Makaleler</h2>
+        <div class="articles-grid">
+            {% for article in articles %}
+            <div class="article-card">
+                {% if article.image %}
+                <img src="{{ url_for('static', filename='uploads/' + article.image) }}" alt="{{ article.title }}" class="article-image">
+                {% else %}
+                <div class="article-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-file-alt" style="font-size: 3rem; color: var(--gray-color);"></i>
+                </div>
+                {% endif %}
+                <div class="article-content">
+                    <h3 class="article-title">{{ article.title }}</h3>
+                    <div class="article-date">{{ article.date.strftime('%d.%m.%Y') }}</div>
+                    <p class="article-excerpt">{{ article.description[:150] }}{% if article.description|length > 150 %}...{% endif %}</p>
+                    <a href="{{ url_for('makale_detay', id=article.id) }}" class="btn btn-outline">Devamını Oku</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('makaleler') }}" class="btn btn-primary">Tüm Makaleleri Görüntüle</a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section" style="background-color: var(--primary-color); color: white;">
+    <div class="section-content text-center">
+        <h2 class="section-title" style="color: white;">Hukuki Destek İçin</h2>
+        <p class="mb-4">Profesyonel hukuk danışmanlığı için bizimle iletişime geçin.</p>
+        <a href="{{ url_for('iletisim') }}" class="btn btn-secondary">İletişime Geçin</a>
+    </div>
+</section>
+{% endblock %}

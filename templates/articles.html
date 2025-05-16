@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Makaleler{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
+    <div class="hero-content">
+        <h1 class="hero-title">Makaleler</h1>
+        <p class="hero-subtitle">Hukuki konularda bilgilendirici makaleler</p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="section" style="padding-bottom: 0;">
+    <div class="section-content">
+        <div class="bg-white p-4 rounded shadow-sm">
+            <form id="searchForm" class="row g-3">
+                <div class="col-md-6">
+                    <label for="searchQuery" class="form-label">Arama</label>
+                    <input type="text" class="form-control" id="searchQuery" name="search" placeholder="Makale ara..." value="{{ search_query }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="categorySelect" class="form-label">Hukuk Alanı</label>
+                    <select class="form-control" id="categorySelect" name="category">
+                        <option value="">Tümü</option>
+                        {% for category in categories %}
+                        <option value="{{ category.value }}" {% if current_category == category.value %}selected{% endif %}>{{ category.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Ara</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Articles List -->
+<section class="section">
+    <div class="section-content">
+        {% if articles %}
+        <div class="articles-grid">
+            {% for article in articles %}
+            <div class="article-card">
+                {% if article.image %}
+                <img src="{{ url_for('static', filename='uploads/' + article.image) }}" alt="{{ article.title }}" class="article-image">
+                {% else %}
+                <div class="article-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-file-alt" style="font-size: 3rem; color: var(--gray-color);"></i>
+                </div>
+                {% endif %}
+                <div class="article-content">
+                    <h3 class="article-title">{{ article.title }}</h3>
+                    <div class="article-date">{{ article.date.strftime('%d.%m.%Y') }}</div>
+                    <p class="article-excerpt">{{ article.description[:150] }}{% if article.description|length > 150 %}...{% endif %}</p>
+                    <span class="article-category">
+                        {% for category in categories %}
+                            {% if category.value == article.category %}
+                                {{ category.label }}
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    <a href="{{ url_for('makale_detay', id=article.id) }}" class="btn btn-outline mt-3">Devamını Oku</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+            <h3>Sonuç Bulunamadı</h3>
+            <p>Arama kriterlerinize uygun makale bulunamadı.</p>
+            <a href="{{ url_for('makaleler') }}" class="btn btn-primary mt-3">Tüm Makaleleri Görüntüle</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Hakkımızda{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero" style="background-image: url('{{ url_for('static', filename='uploads/' + settings.about_image) if settings.about_image else 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80' }}');">
+    <div class="hero-content">
+        <h1 class="hero-title">{{ settings.about_title }}</h1>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="section">
+    <div class="section-content">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="bg-white p-5 rounded shadow-sm">
+                    {{ settings.about_content|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="section" style="background-color: var(--light-color);">
+    <div class="section-content">
+        <h2 class="section-title">Ekibimiz</h2>
+        <div class="lawyers-grid">
+            {% for lawyer in lawyers %}
+            <div class="lawyer-card">
+                {% if lawyer.photo %}
+                <img src="{{ url_for('static', filename='uploads/' + lawyer.photo) }}" alt="{{ lawyer.name }}" class="lawyer-image">
+                {% else %}
+                <div class="lawyer-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user" style="font-size: 3rem; color: var(--gray-color);"></i>
+                </div>
+                {% endif %}
+                <div class="lawyer-content">
+                    <h3 class="lawyer-name">{{ lawyer.name }}</h3>
+                    <div class="lawyer-title">{{ lawyer.title }}</div>
+                    <p class="lawyer-bio">{{ lawyer.bio }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section" style="background-color: var(--primary-color); color: white;">
+    <div class="section-content text-center">
+        <h2 class="section-title" style="color: white;">Hukuki Destek İçin</h2>
+        <p class="mb-4">Profesyonel hukuk danışmanlığı için bizimle iletişime geçin.</p>
+        <a href="{{ url_for('iletisim') }}" class="btn btn-secondary">İletişime Geçin</a>
+    </div>
+</section>
+{% endblock %}

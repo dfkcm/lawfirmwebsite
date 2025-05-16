@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Uzmanlık Alanları{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero" style="background-image: url('https://images.unsplash.com/photo-1505663912202-ac22d4cb3707?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
+    <div class="hero-content">
+        <h1 class="hero-title">Uzmanlık Alanları</h1>
+        <p class="hero-subtitle">Hukuki alanlarımız ve çözüm odaklı yaklaşımımız</p>
+    </div>
+</section>
+
+<!-- Expertise Content -->
+<section class="section">
+    <div class="section-content">
+        <div class="expertise-list">
+            {% for expertise in expertise_list %}
+            <div class="expertise-item">
+                <h3 class="expertise-title">{{ expertise.title }}</h3>
+                <p class="expertise-description">{{ expertise.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section" style="background-color: var(--primary-color); color: white;">
+    <div class="section-content text-center">
+        <h2 class="section-title" style="color: white;">Hukuki Destek İçin</h2>
+        <p class="mb-4">Profesyonel hukuk danışmanlığı için bizimle iletişime geçin.</p>
+        <a href="{{ url_for('iletisim') }}" class="btn btn-secondary">İletişime Geçin</a>
+    </div>
+</section>
+{% endblock %}
