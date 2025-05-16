@@ -250,30 +250,20 @@ a:hover {
     color: var(--secondary-color);
 }
 
-.home-menu {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+.inspirational-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-style: italic;
+    color: var(--secondary-color);
     margin-top: 3rem;
     margin-bottom: 3rem;
-}
-
-.home-menu-item {
-    display: inline-block;
-    padding: 0.5rem 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 0;
-    color: #fff;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-}
-
-.home-menu-item:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    color: #fff;
+    text-align: center;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+    position: relative;
+    padding: 0 1.5rem;
 }
 
 .copyright-home {
