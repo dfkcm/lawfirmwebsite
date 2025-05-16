@@ -58,7 +58,7 @@ class User(db.Model):
     description = Column('aciklama', Text, nullable=True)
     profile_photo = Column('profilfoto', String(255), nullable=True)
     profession = Column('meslek', String(255), nullable=True)
-    phone = Column('telefon', String(15), nullable=True)
+    phone = Column('telefon', String(25), nullable=True)  # Telefon alan boyutunu arttırdık
     email = Column('mail', String(100), unique=True, nullable=False)
     
     def __repr__(self):
