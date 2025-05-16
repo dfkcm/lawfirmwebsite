@@ -31,8 +31,9 @@
     <header class="header">
         <nav class="navbar">
             <div class="logo">
-                <a href="{{ url_for('index') }}">
-                    <img src="{{ url_for('static', filename='assets/logo.svg') }}" alt="{{ settings.site_name }}">
+                <a href="{{ url_for('index') }}" class="logo-container">
+                    <img src="{{ url_for('static', filename='assets/new-logo.svg') }}" alt="{{ settings.site_name }}" class="logo-image">
+                    <span class="logo-text">KILINÇ HUKUK</span>
                 </a>
             </div>
             

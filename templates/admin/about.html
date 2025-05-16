@@ -1,0 +1,77 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Hakkımızda{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="form-container">
+        <h1 class="form-title">Hakkımızda İçeriği</h1>
+        
+        <form method="POST" action="{{ url_for('admin_about') }}" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    {% if settings.about_image %}
+                    <div class="text-center">
+                        <img src="{{ url_for('static', filename='uploads/' + settings.about_image) }}" alt="Hakkımızda Görseli" class="img-fluid rounded" style="max-height: 200px;" id="preview-about-image">
+                    </div>
+                    {% else %}
+                    <div class="text-center bg-light p-4 rounded" id="about-image-container">
+                        <i class="fas fa-image text-muted fa-3x"></i>
+                        <p class="mt-2 text-muted">Görsel yüklenmemiş</p>
+                    </div>
+                    <img src="" alt="Hakkımızda Görseli" class="img-fluid rounded" id="preview-about-image" style="display: none;">
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mb-3">
+                    <label for="about_title" class="form-label">Başlık</label>
+                    {{ form.about_title(class="form-control", placeholder="Hakkımızda başlığı") }}
+                    {% if form.about_title.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.about_title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mb-3">
+                    <label for="about_content" class="form-label">İçerik</label>
+                    {{ form.about_content(class="form-control rich-editor", rows=10, placeholder="Hakkımızda içeriği") }}
+                    {% if form.about_content.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.about_content.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mb-3">
+                    <label for="about_image" class="form-label">Görsel</label>
+                    {{ form.about_image(class="form-control", data_preview="preview-about-image") }}
+                    {% if form.about_image.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.about_image.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small class="text-muted">Desteklenen formatlar: JPG, PNG</small>
+                </div>
+                
+                <div class="col-md-12 mt-3">
+                    <button type="submit" class="btn btn-admin btn-admin-primary">
+                        <i class="fas fa-save me-2"></i> Kaydet
+                    </button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times me-2"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
