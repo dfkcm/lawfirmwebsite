@@ -111,6 +111,7 @@ class Contact(db.Model):
     email = Column('mailadresi', String(255), nullable=False)
     subject = Column('konu', String(255), nullable=False)
     message = Column('mesaj', Text, nullable=False)
+    ip_address = Column('ip_adresi', String(45), nullable=True)  # IPv6 için 45 karakter yeterli
     date = Column('tarih', DateTime, default=datetime.datetime.utcnow)
     
     def __repr__(self):
