@@ -20,7 +20,10 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # Configure upload path
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/uploads')
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+    try:
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+    except Exception as e:
+        logging.error(f"Uploads klasörü oluşturma hatası: {e}")
 
 # Database configuration
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///portfolio.db")
@@ -48,30 +51,31 @@ def load_user(user_id):
 
 # Create all tables
 with app.app_context():
-    from models import Admin, Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer
-    db.create_all()
-    
-    # Initialize an admin user if none exists
-    if not Admin.query.first():
-        from werkzeug.security import generate_password_hash
-        admin = Admin(
-            username='admin',
-            email='admin@admin.com',
-            password_hash=generate_password_hash('MS')
-        )
-        db.session.add(admin)
-        db.session.commit()
-        logging.info("Created default admin user")
-    
-    # Initialize settings if none exist
-    if not Settings.query.first():
-        settings = Settings(
-            site_name='KILINÇ HUKUK VE DANIŞMANLIK',
-            site_description='KILINÇ HUKUK VE DANIŞMANLIK - Profesyonel Hukuk Hizmetleri',
-            site_keywords='hukuk, avukat, danışmanlık, dava, hukuki yardım',
-            site_author='Av. Nail Furkan Kılınç',
-            site_footer='© 2024 KILINÇ HUKUK VE DANIŞMANLIK. Tüm hakları saklıdır.'
-        )
-        db.session.add(settings)
-        db.session.commit()
-        logging.info("Created default settings")
+    try:
+        from models import Admin, Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer
+        db.create_all()
+        
+        # Initialize an admin user if none exists
+        if not Admin.query.first():
+            from werkzeug.security import generate_password_hash
+            admin = Admin()
+            admin.username = 'admin'
+            admin.email = 'admin@admin.com'
+            admin.password_hash = generate_password_hash('MS')
+            db.session.add(admin)
+            db.session.commit()
+            logging.info("Created default admin user")
+        
+        # Initialize settings if none exist
+        if not Settings.query.first():
+            settings = Settings()
+            settings.site_name = 'KILINÇ HUKUK VE DANIŞMANLIK'
+            settings.site_description = 'KILINÇ HUKUK VE DANIŞMANLIK - Profesyonel Hukuk Hizmetleri'
+            settings.site_keywords = 'hukuk, avukat, danışmanlık, dava, hukuki yardım'
+            settings.site_author = 'Av. Nail Furkan Kılınç'
+            settings.site_footer = '© 2024 KILINÇ HUKUK VE DANIŞMANLIK. Tüm hakları saklıdır.'
+            db.session.add(settings)
+            db.session.commit()
+            logging.info("Created default settings")
+    except Exception as e:
+        logging.error(f"Veritabanı başlatma hatası: {e}")
