@@ -17,18 +17,15 @@ app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 @app.route('/')
 def index():
-    # Fetch data for the home page
+    # Fetch minimal data for the simplified home page
     settings = Settings.query.first()
     social = SocialMedia.query.first()
-    services = Service.query.all()
-    articles = Project.query.order_by(Project.date.desc()).limit(3).all()
+    user = User.query.first()
     
     return render_template('index.html',
                          settings=settings,
                          social=social,
-                         services=services,
-                         Project=Project,
-                         articles=articles)
+                         user=user)
 
 @app.route('/hakkimizda')
 def hakkimizda():

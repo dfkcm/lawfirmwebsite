@@ -103,8 +103,23 @@ a:hover {
     color: var(--primary-color);
 }
 
-.logo img {
-    height: 50px;
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-image {
+    height: 40px;
+    width: auto;
+}
+
+.logo-text {
+    color: var(--primary-color);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
 }
 
 .nav-menu {
@@ -173,6 +188,102 @@ a:hover {
     margin-bottom: 2rem;
     font-weight: 300;
     color: rgba(255, 255, 255, 0.9);
+}
+
+/* New Full-Screen Hero Design for Homepage */
+.hero-full {
+    height: 100vh;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.hero-center {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.logo-large {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.logo-large img {
+    height: 100px;
+    width: auto;
+}
+
+.hero-title-large {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+    color: #fff;
+}
+
+.hero-subtitle-large {
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--secondary-color);
+}
+
+.home-menu {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.home-menu-item {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
+    color: #fff;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.home-menu-item:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: #fff;
+}
+
+.copyright-home {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+    left: 0;
+    text-align: center;
 }
 
 /* Section Styles */
