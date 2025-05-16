@@ -57,11 +57,6 @@
                         <i class="fas fa-tachometer-alt me-2"></i> Kontrol Paneli
                     </a>
                 </li>
-                <li {% if request.endpoint == 'admin_profile' %}class="active"{% endif %}>
-                    <a href="{{ url_for('admin_profile') }}">
-                        <i class="fas fa-user me-2"></i> Profil
-                    </a>
-                </li>
                 <li {% if request.endpoint == 'admin_homepage' %}class="active"{% endif %}>
                     <a href="{{ url_for('admin_homepage') }}">
                         <i class="fas fa-home me-2"></i> Ana Sayfa
@@ -70,11 +65,6 @@
                 <li {% if request.endpoint == 'admin_about' %}class="active"{% endif %}>
                     <a href="{{ url_for('admin_about') }}">
                         <i class="fas fa-info-circle me-2"></i> Hakkımızda
-                    </a>
-                </li>
-                <li {% if request.endpoint == 'admin_services' %}class="active"{% endif %}>
-                    <a href="{{ url_for('admin_services') }}">
-                        <i class="fas fa-cogs me-2"></i> Hizmetler
                     </a>
                 </li>
                 <li {% if request.endpoint == 'admin_expertise' %}class="active"{% endif %}>
@@ -97,14 +87,9 @@
                         <i class="fas fa-user-tie me-2"></i> Avukatlar
                     </a>
                 </li>
-                <li {% if request.endpoint == 'admin_social_media' %}class="active"{% endif %}>
-                    <a href="{{ url_for('admin_social_media') }}">
-                        <i class="fas fa-share-alt me-2"></i> Sosyal Medya
-                    </a>
-                </li>
-                <li {% if request.endpoint == 'admin_settings' %}class="active"{% endif %}>
-                    <a href="{{ url_for('admin_settings') }}">
-                        <i class="fas fa-cog me-2"></i> Site Ayarları
+                <li {% if request.endpoint == 'admin_contact_settings' %}class="active"{% endif %}>
+                    <a href="{{ url_for('admin_profile') }}">
+                        <i class="fas fa-address-card me-2"></i> İletişim Bilgileri
                     </a>
                 </li>
             </ul>

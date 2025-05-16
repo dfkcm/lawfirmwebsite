@@ -14,7 +14,7 @@
 <section class="section">
     <div class="section-content">
         <div class="row">
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="100">
                 <div class="bg-white p-5 rounded shadow-sm">
                     {{ settings.about_content|safe }}
                 </div>
@@ -26,10 +26,10 @@
 <!-- Team Section -->
 <section class="section" style="background-color: var(--light-color);">
     <div class="section-content">
-        <h2 class="section-title">Ekibimiz</h2>
+        <h2 class="section-title" data-aos="fade-up">Ekibimiz</h2>
         <div class="lawyers-grid">
             {% for lawyer in lawyers %}
-            <div class="lawyer-card">
+            <div class="lawyer-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
                 {% if lawyer.photo %}
                 <img src="{{ url_for('static', filename='uploads/' + lawyer.photo) }}" alt="{{ lawyer.name }}" class="lawyer-image">
                 {% else %}
