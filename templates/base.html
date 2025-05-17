@@ -10,7 +10,7 @@
     <meta name="author" content="{{ settings.site_author }}">
     
     <!-- Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='assets/logo.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ url_for('static', filename='assets/new-logo.png') }}" type="image/svg+xml">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -30,12 +30,31 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+<div id="preloader">
+  <div class="loader-logo">
+    <img src="{{ url_for('static', filename='img/new-logo.png') }}" alt="Logo">
+  </div>
+</div>
+<script>
+  window.addEventListener("load", function () {
+    const preloader = document.getElementById("preloader");
+
+    // 1. Efekt başlasın diye bu sınıfı ekliyoruz
+    preloader.classList.add("fade-out");
+
+    // 2. Efekt bitince tamamen DOM'dan sil
+    preloader.addEventListener("transitionend", function () {
+      preloader.remove();  // logo sahneden iner
+    });
+  });
+</script>
+
     <!-- Header -->
     <header class="header">
         <nav class="navbar">
             <div class="logo">
                 <a href="{{ url_for('index') }}" class="logo-container">
-                    <img src="{{ url_for('static', filename='assets/new-logo.svg') }}" alt="{{ settings.site_name }}" class="logo-image">
+                    <img src="{{ url_for('static', filename='assets/new-logo.png') }}" alt="{{ settings.site_name }}" class="logo-image">
                     <span class="logo-text">KILINÇ HUKUK</span>
                 </a>
             </div>

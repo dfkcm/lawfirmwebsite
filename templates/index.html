@@ -2,13 +2,12 @@
 
 {% block content %}
 <!-- Hero Section - Redesigned for simplicity -->
-<section class="hero-full" style="background-image: url('{{ url_for('static', filename='uploads/' + settings.homepage_image) if settings.homepage_image else 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80' }}');">
+<section class="hero-full" style="background-image: url('/static/uploads/arkaplan.jpg');">
     <div class="hero-overlay"></div>
     <div class="hero-center">
         <div class="logo-large">
-            <img src="{{ url_for('static', filename='assets/new-logo.svg') }}" alt="Kılınç Hukuk Logo">
         </div>
-        <h1 class="hero-title-large">KILINÇ HUKUK & DANIŞMANLIK</h1>
+        <h1 class="hero-title-large fancy-title"><span class="fancy-kilinc">KILINÇ</span> <span class="fancy-hukuk">HUKUK</span> <span class="fancy-and">&</span> <span class="fancy-danismanlik">DANIŞMANLIK</span></h1>
         <div class="hero-subtitle-large">AV. NAİL FURKAN KILINÇ</div>
         
         <div class="inspirational-quote">

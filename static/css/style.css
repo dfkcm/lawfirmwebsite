@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap');
+
 :root {
     --primary-color: #1a3263;
     --secondary-color: #c3a47f;
@@ -159,6 +162,14 @@ a:hover {
     position: relative;
 }
 
+.hero-center {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 2rem;
+  transform: translateY(-70px); /* ← sihirli dokunuş */
+}
+
 .hero::before {
     content: '';
     position: absolute;
@@ -190,6 +201,7 @@ a:hover {
     color: rgba(255, 255, 255, 0.9);
 }
 
+
 /* New Full-Screen Hero Design for Homepage */
 .hero-full {
     height: 100vh;
@@ -203,6 +215,7 @@ a:hover {
     justify-content: center;
     text-align: center;
     color: white;
+    background-attachment: fixed;
 }
 
 .hero-overlay {
@@ -211,7 +224,7 @@ a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 1;
 }
 
@@ -236,18 +249,19 @@ a:hover {
 .hero-title-large {
     font-family: 'Playfair Display', serif;
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 900;
     margin-bottom: 1rem;
     letter-spacing: 2px;
     color: #fff;
 }
 
 .hero-subtitle-large {
-    font-size: 1.2rem;
-    margin-bottom: 3rem;
-    font-weight: 400;
+    color: #fff !important;
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
     letter-spacing: 1px;
-    color: var(--secondary-color);
+    margin-top: 0.5rem;
 }
 
 .inspirational-quote {
@@ -860,3 +874,133 @@ a:hover {
         font-size: 1.75rem;
     }
 }
+
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 10.6s ease;
+}
+
+#preloader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-logo img {
+  width: 150px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+#preloader {
+  transition: opacity 1.8s ease; /* 0.8 saniyede kaybolacak */
+  opacity: 1;
+}
+
+#preloader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.about-text {
+  text-align: justify;
+  line-height: 1.8;
+  font-size: 17px;
+}
+
+.about-text p {
+  margin-bottom: 1.2em;
+}
+.lawyer-bio {
+  text-align: justify;
+  line-height: 1.6;
+  font-size: 16px;
+  margin-top: 0.5rem;
+}
+.lawyer-card {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Kurumsal ve sade başlık stili */
+.fancy-title {
+    font-family: 'Cinzel', serif;
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(26,50,99,0.10), 0 1px 0 #a88b68;
+    border-bottom: 2.5px solid #c3a47f;
+    display: inline-block;
+    padding-bottom: 0.3em;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    animation: none;
+    transition: none;
+    line-height: 1.1;
+}
+
+.fancy-kilinc, .fancy-hukuk, .fancy-danismanlik {
+    color: #fff;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 8px #c3a47f55, 0 1px 0 #a88b68;
+    transition: none;
+}
+
+.fancy-and {
+    color: #c3a47f;
+    font-size: 2.1rem;
+    margin: 0 0.4rem;
+    vertical-align: middle;
+    font-weight: 900;
+    text-shadow: 0 2px 8px #fff2, 0 1px 0 #a88b68;
+    filter: none;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    transition: none;
+}
+
+.fancy-title span {
+    display: inline-block;
+    transition: none;
+}
+
+@media screen and (max-width: 768px) {
+    .fancy-title {
+        font-size: 1.7rem;
+    }
+    .fancy-and {
+        font-size: 1.1rem;
+    }
+    .hero-subtitle-large {
+        font-size: 1.1rem;
+    }
+}
+
