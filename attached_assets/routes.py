@@ -256,7 +256,8 @@ def iletisim():
             full_name=request.form.get('full_name'),
             email=request.form.get('email'),
             subject=request.form.get('subject'),
-            message=request.form.get('message')
+            message=request.form.get('message'),
+            ip_address=request.headers.get("X-Forwarded-For", request.remote_addr)
         )
         
         try:
