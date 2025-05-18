@@ -1,0 +1,86 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Ziyaretçi Kayıtları{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Ziyaretçi Kayıtları</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_analytics') }}">Ziyaretçi Analitiği</a></li>
+        <li class="breadcrumb-item active">Ziyaretçi Kayıtları</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Detaylı Ziyaretçi Kayıtları
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Tarih/Saat</th>
+                        <th>IP Adresi</th>
+                        <th>Sayfa</th>
+                        <th>Tarayıcı</th>
+                        <th>Platform</th>
+                        <th>Cihaz Tipi</th>
+                        <th>Referans</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs.items %}
+                    <tr>
+                        <td>{{ log.visit_time.strftime('%d.%m.%Y %H:%M:%S') }}</td>
+                        <td>{{ log.ip_address }}</td>
+                        <td>{{ log.page_visited }}</td>
+                        <td>{{ log.browser }}</td>
+                        <td>{{ log.platform }}</td>
+                        <td>{{ 'Mobil' if log.is_mobile else 'Masaüstü' }}</td>
+                        <td>{{ log.referrer or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            {% if logs.pages > 1 %}
+            <nav aria-label="Sayfalama">
+                <ul class="pagination justify-content-center">
+                    {% if logs.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin_visitor_logs', page=logs.prev_num) }}">Önceki</a>
+                    </li>
+                    {% endif %}
+
+                    {% for page_num in logs.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                        {% if page_num %}
+                            {% if page_num == logs.page %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_visitor_logs', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if logs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin_visitor_logs', page=logs.next_num) }}">Sonraki</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from app import app, db
 from models import Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer
 from forms import ContactForm
-from utils import generate_captcha_code
+from utils import generate_captcha_code, track_visitor
 import secrets
 
 # Generate CSRF token for session
@@ -14,6 +14,20 @@ def generate_csrf_token():
     return session['csrf_token']
 
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
+
+@app.before_request
+def before_request():
+    print(f"Before request başladı - Path: {request.path}") # Debug log
+    try:
+        # Static dosyalar ve admin paneli için ziyaretçi takibini yapma
+        if not request.path.startswith('/static') and not request.path.startswith('/admin'):
+            print("Ziyaretçi takibi başlatılıyor...") # Debug log
+            track_visitor()
+            print("Ziyaretçi takibi tamamlandı") # Debug log
+    except Exception as e:
+        print(f"Before request hatası: {str(e)}") # Debug log
+        import traceback
+        print(f"Before request stack trace: {traceback.format_exc()}") # Debug log
 
 @app.route('/')
 def index():
@@ -350,3 +364,12 @@ def internal_server_error(e):
                          settings=settings, 
                          social=social, 
                          message='Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyiniz.'), 500
+
+@app.route('/test-visitor')
+def test_visitor():
+    try:
+        track_visitor()
+        return "Ziyaretçi kaydı başarıyla oluşturuldu!"
+    except Exception as e:
+        import traceback
+        return f"Hata oluştu: {str(e)}\n\nHata detayı:\n{traceback.format_exc()}"

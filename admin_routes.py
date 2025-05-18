@@ -4,13 +4,13 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from app import app, db
-from models import Admin, Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer
+from models import Admin, Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer, VisitorLog, DailyAnalytics
 from forms import (LoginForm, ChangePasswordForm, ProfileForm, ServiceForm, 
                   ExpertiseForm, ProjectForm, SocialMediaForm, SettingsForm,
                   HomepageForm, AboutForm, LawyerForm)
 from utils import save_image, delete_image
 import secrets
-import datetime
+from datetime import date, timedelta, datetime
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -58,7 +58,7 @@ def admin_dashboard():
                          expertise_count=expertise_count,
                          lawyer_count=lawyer_count,
                          latest_messages=latest_messages,
-                         now=datetime.datetime.now())
+                         now=datetime.now())
 
 @app.route('/admin/profile', methods=['GET', 'POST'])
 @login_required
@@ -92,7 +92,7 @@ def admin_profile():
         flash('Profil bilgileri başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_profile'))
     
-    return render_template('admin/profile.html', settings=settings, form=form, user=user, now=datetime.datetime.now())
+    return render_template('admin/profile.html', settings=settings, form=form, user=user, now=datetime.now())
 
 @app.route('/admin/change-password', methods=['GET', 'POST'])
 @login_required
@@ -111,7 +111,7 @@ def admin_change_password():
         else:
             flash('Mevcut şifre hatalı.', 'danger')
     
-    return render_template('admin/change_password.html', settings=settings, form=form, now=datetime.datetime.now())
+    return render_template('admin/change_password.html', settings=settings, form=form, now=datetime.now())
 
 @app.route('/admin/services', methods=['GET', 'POST'])
 @login_required
@@ -130,7 +130,7 @@ def admin_services():
         flash('Hizmet başarıyla eklendi.', 'success')
         return redirect(url_for('admin_services'))
     
-    return render_template('admin/services.html', settings=settings, services=services, form=form, now=datetime.datetime.now())
+    return render_template('admin/services.html', settings=settings, services=services, form=form, now=datetime.now())
 
 @app.route('/admin/services/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -145,7 +145,7 @@ def admin_edit_service(id):
         flash('Hizmet başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_services'))
     
-    return render_template('admin/edit_service.html', settings=settings, form=form, service=service, now=datetime.datetime.now())
+    return render_template('admin/edit_service.html', settings=settings, form=form, service=service, now=datetime.now())
 
 @app.route('/admin/services/delete/<int:id>')
 @login_required
@@ -173,7 +173,7 @@ def admin_expertise():
         flash('Uzmanlık alanı başarıyla eklendi.', 'success')
         return redirect(url_for('admin_expertise'))
     
-    return render_template('admin/expertise.html', settings=settings, expertise_list=expertise_list, form=form, now=datetime.datetime.now())
+    return render_template('admin/expertise.html', settings=settings, expertise_list=expertise_list, form=form, now=datetime.now())
 
 @app.route('/admin/expertise/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -188,7 +188,7 @@ def admin_edit_expertise(id):
         flash('Uzmanlık alanı başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_expertise'))
     
-    return render_template('admin/edit_expertise.html', settings=settings, form=form, expertise=expertise, now=datetime.datetime.now())
+    return render_template('admin/edit_expertise.html', settings=settings, form=form, expertise=expertise, now=datetime.now())
 
 @app.route('/admin/expertise/delete/<int:id>')
 @login_required
@@ -218,7 +218,7 @@ def admin_projects():
         flash('Makale başarıyla eklendi.', 'success')
         return redirect(url_for('admin_projects'))
     
-    return render_template('admin/projects.html', settings=settings, projects=projects, form=form, now=datetime.datetime.now())
+    return render_template('admin/projects.html', settings=settings, projects=projects, form=form, now=datetime.now())
 
 @app.route('/admin/projects/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -237,7 +237,7 @@ def admin_edit_project(id):
         flash('Makale başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_projects'))
     
-    return render_template('admin/edit_project.html', settings=settings, form=form, project=project, now=datetime.datetime.now())
+    return render_template('admin/edit_project.html', settings=settings, form=form, project=project, now=datetime.now())
 
 @app.route('/admin/projects/delete/<int:id>')
 @login_required
@@ -271,7 +271,7 @@ def admin_social_media():
         flash('Sosyal medya bağlantıları başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_social_media'))
     
-    return render_template('admin/social_media.html', settings=settings, form=form, now=datetime.datetime.now())
+    return render_template('admin/social_media.html', settings=settings, form=form, now=datetime.now())
 
 @app.route('/admin/settings', methods=['GET', 'POST'])
 @login_required
@@ -285,21 +285,21 @@ def admin_settings():
         flash('Site ayarları başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_settings'))
     
-    return render_template('admin/settings.html', settings=settings, form=form, now=datetime.datetime.now())
+    return render_template('admin/settings.html', settings=settings, form=form, now=datetime.now())
 
 @app.route('/admin/messages')
 @login_required
 def admin_messages():
     settings = Settings.query.first()
     messages = Contact.query.order_by(Contact.date.desc()).all()
-    return render_template('admin/messages.html', settings=settings, messages=messages, now=datetime.datetime.now())
+    return render_template('admin/messages.html', settings=settings, messages=messages, now=datetime.now())
 
 @app.route('/admin/messages/view/<int:id>')
 @login_required
 def admin_view_message(id):
     settings = Settings.query.first()
     message = Contact.query.get_or_404(id)
-    return render_template('admin/view_message.html', settings=settings, message=message, now=datetime.datetime.now())
+    return render_template('admin/view_message.html', settings=settings, message=message, now=datetime.now())
 
 @app.route('/admin/messages/delete/<int:id>')
 @login_required
@@ -332,7 +332,7 @@ def admin_homepage():
         flash('Anasayfa içeriği başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_homepage'))
     
-    return render_template('admin/homepage.html', settings=settings, form=form, now=datetime.datetime.now())
+    return render_template('admin/homepage.html', settings=settings, form=form, now=datetime.now())
 
 @app.route('/admin/about', methods=['GET', 'POST'])
 @login_required
@@ -355,7 +355,7 @@ def admin_about():
         flash('Hakkımızda içeriği başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_about'))
     
-    return render_template('admin/about.html', settings=settings, form=form, now=datetime.datetime.now())
+    return render_template('admin/about.html', settings=settings, form=form, now=datetime.now())
 
 @app.route('/admin/lawyers', methods=['GET', 'POST'])
 @login_required
@@ -382,7 +382,7 @@ def admin_lawyers():
         flash('Avukat başarıyla eklendi.', 'success')
         return redirect(url_for('admin_lawyers'))
     
-    return render_template('admin/lawyers.html', settings=settings, lawyers=lawyers, form=form, now=datetime.datetime.now())
+    return render_template('admin/lawyers.html', settings=settings, lawyers=lawyers, form=form, now=datetime.now())
 
 @app.route('/admin/lawyers/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -408,7 +408,7 @@ def admin_edit_lawyer(id):
         flash('Avukat bilgileri başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_lawyers'))
     
-    return render_template('admin/edit_lawyer.html', settings=settings, form=form, lawyer=lawyer, now=datetime.datetime.now())
+    return render_template('admin/edit_lawyer.html', settings=settings, form=form, lawyer=lawyer, now=datetime.now())
 
 @app.route('/admin/lawyers/delete/<int:id>')
 @login_required
@@ -423,3 +423,76 @@ def admin_delete_lawyer(id):
     db.session.commit()
     flash('Avukat başarıyla silindi.', 'success')
     return redirect(url_for('admin_lawyers'))
+
+@app.route('/admin/analytics')
+@login_required
+def admin_analytics():
+    settings = Settings.query.first()
+    
+    # Get date range (last 30 days for overview)
+    end_date = date.today()
+    start_date_30d = end_date - timedelta(days=29)  # 29 çünkü bugün dahil 30 gün
+    start_date_7d = end_date - timedelta(days=6)    # 6 çünkü bugün dahil 7 gün
+    
+    # Get daily analytics for both periods
+    daily_stats_30d = DailyAnalytics.query.filter(
+        DailyAnalytics.date >= start_date_30d,
+        DailyAnalytics.date <= end_date
+    ).order_by(DailyAnalytics.date.desc()).all()
+    
+    # Get last 7 days stats for the table
+    daily_stats_7d = DailyAnalytics.query.filter(
+        DailyAnalytics.date >= start_date_7d,
+        DailyAnalytics.date <= end_date
+    ).order_by(DailyAnalytics.date.desc()).all()
+    
+    # Get today's stats
+    today_stats = DailyAnalytics.query.filter_by(date=end_date).first()
+    
+    # Calculate totals for the 30-day period
+    total_visits = sum(stat.total_visits for stat in daily_stats_30d)
+    total_unique_visitors = sum(stat.unique_visitors for stat in daily_stats_30d)
+    total_mobile_visits = sum(stat.mobile_visits for stat in daily_stats_30d)
+    total_desktop_visits = sum(stat.desktop_visits for stat in daily_stats_30d)
+    
+    # Get most visited pages today
+    if today_stats:
+        page_visits = {
+            'Anasayfa': today_stats.home_page_visits,
+            'Hakkımızda': today_stats.about_page_visits,
+            'İletişim': today_stats.contact_page_visits,
+            'Makaleler': today_stats.articles_page_visits,
+            'Uzmanlık Alanları': today_stats.practice_areas_visits
+        }
+    else:
+        page_visits = {}
+    
+    return render_template('admin/analytics.html',
+                         settings=settings,
+                         daily_stats=daily_stats_7d,  # Changed to 7-day stats for table
+                         today_stats=today_stats,
+                         total_visits=total_visits,
+                         total_unique_visitors=total_unique_visitors,
+                         total_mobile_visits=total_mobile_visits,
+                         total_desktop_visits=total_desktop_visits,
+                         page_visits=page_visits,
+                         start_date=start_date_30d,  # For overview cards
+                         start_date_7d=start_date_7d,  # For daily stats table
+                         end_date=end_date,
+                         now=datetime.now())
+
+@app.route('/admin/visitor-logs')
+@login_required
+def admin_visitor_logs():
+    settings = Settings.query.first()
+    page = request.args.get('page', 1, type=int)
+    per_page = 50
+    
+    # Get visitor logs with pagination
+    logs = VisitorLog.query.order_by(VisitorLog.visit_time.desc()).paginate(
+        page=page, per_page=per_page, error_out=False)
+    
+    return render_template('admin/visitor_logs.html',
+                         settings=settings,
+                         logs=logs,
+                         now=datetime.now())

@@ -1,7 +1,7 @@
 import datetime
 from app import db
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Float, Date
 from sqlalchemy.orm import relationship
 
 class Admin(UserMixin, db.Model):
@@ -116,3 +116,38 @@ class Contact(db.Model):
     
     def __repr__(self):
         return f'<Contact {self.full_name}>'
+
+class VisitorLog(db.Model):
+    __tablename__ = 'visitor_logs'
+    id = Column(Integer, primary_key=True)
+    ip_address = Column(String(45), nullable=False)
+    user_agent = Column(String(255))
+    page_visited = Column(String(255), nullable=False)
+    referrer = Column(String(255))
+    visit_time = Column(DateTime, default=datetime.datetime.utcnow)
+    country = Column(String(100))
+    city = Column(String(100))
+    browser = Column(String(100))
+    platform = Column(String(100))
+    is_mobile = Column(Boolean, default=False)
+    session_id = Column(String(100))  # Aynı ziyaretçinin farklı sayfa ziyaretlerini gruplamak için
+
+    def __repr__(self):
+        return f'<VisitorLog {self.ip_address} - {self.page_visited}>'
+
+class DailyAnalytics(db.Model):
+    __tablename__ = 'daily_analytics'
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, unique=True, nullable=False)
+    total_visits = Column(Integer, default=0)
+    unique_visitors = Column(Integer, default=0)
+    home_page_visits = Column(Integer, default=0)
+    about_page_visits = Column(Integer, default=0)
+    contact_page_visits = Column(Integer, default=0)
+    articles_page_visits = Column(Integer, default=0)
+    practice_areas_visits = Column(Integer, default=0)
+    mobile_visits = Column(Integer, default=0)
+    desktop_visits = Column(Integer, default=0)
+
+    def __repr__(self):
+        return f'<DailyAnalytics {self.date} - {self.total_visits} visits>'

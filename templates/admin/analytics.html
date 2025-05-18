@@ -1,0 +1,130 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Ziyaretçi Analitiği{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Ziyaretçi Analitiği</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Ziyaretçi Analitiği</li>
+    </ol>
+
+    <!-- Analytics Overview Cards -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-chart-line me-1"></i>
+            Son 30 Günlük Genel İstatistikler ({{ start_date.strftime('%d.%m.%Y') }} - {{ end_date.strftime('%d.%m.%Y') }})
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-primary text-white mb-4">
+                        <div class="card-body">
+                            <h4 class="mb-0">{{ total_visits }}</h4>
+                            <div>Toplam Ziyaret</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-success text-white mb-4">
+                        <div class="card-body">
+                            <h4 class="mb-0">{{ total_unique_visitors }}</h4>
+                            <div>Tekil Ziyaretçi</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-info text-white mb-4">
+                        <div class="card-body">
+                            <h4 class="mb-0">{{ total_mobile_visits }}</h4>
+                            <div>Mobil Ziyaret</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-warning text-white mb-4">
+                        <div class="card-body">
+                            <h4 class="mb-0">{{ total_desktop_visits }}</h4>
+                            <div>Masaüstü Ziyaret</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Stats Table -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Günlük İstatistikler (Son 7 Gün)
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Toplam Ziyaret</th>
+                            <th>Tekil Ziyaretçi</th>
+                            <th>Mobil</th>
+                            <th>Masaüstü</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in daily_stats %}
+                        <tr>
+                            <td>{{ stat.date.strftime('%d.%m.%Y') }}</td>
+                            <td>{{ stat.total_visits }}</td>
+                            <td>{{ stat.unique_visitors }}</td>
+                            <td>{{ stat.mobile_visits }}</td>
+                            <td>{{ stat.desktop_visits }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="small text-muted mt-2">
+                {{ start_date_7d.strftime('%d.%m.%Y') }} - {{ end_date.strftime('%d.%m.%Y') }} tarihleri arası
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Page Visits -->
+    {% if today_stats %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-chart-pie me-1"></i>
+            Bugünkü Sayfa Ziyaretleri ({{ end_date.strftime('%d.%m.%Y') }})
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sayfa</th>
+                            <th>Ziyaret Sayısı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for page, visits in page_visits.items() %}
+                        <tr>
+                            <td>{{ page }}</td>
+                            <td>{{ visits }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mb-4">
+        <a href="{{ url_for('admin_visitor_logs') }}" class="btn btn-primary">
+            <i class="fas fa-list me-1"></i> Detaylı Ziyaretçi Kayıtları (Son 100 Kayıt)
+        </a>
+    </div>
+</div>
+{% endblock %} 

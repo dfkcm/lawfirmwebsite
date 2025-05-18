@@ -107,6 +107,8 @@ a:hover {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
+    position: relative;
+    z-index: 1001;
 }
 
 .logo-container {
@@ -145,6 +147,7 @@ a:hover {
     text-transform: uppercase;
     font-size: 0.9rem;
     letter-spacing: 1px;
+    transition: all 0.3s ease;
 }
 
 .nav-link:hover {
@@ -153,6 +156,27 @@ a:hover {
 
 .nav-toggle {
     display: none;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1001;
+}
+
+.nav-toggle:hover {
+    color: var(--secondary-color);
+}
+
+.nav-toggle i {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.nav-toggle.active i {
+    transform: rotate(90deg);
 }
 
 /* Hero Section */
@@ -849,29 +873,72 @@ a:hover {
     
     .nav-menu {
         position: fixed;
-        left: -100%;
-        top: 70px;
-        flex-direction: column;
-        background-color: white;
+        top: 0;
+        left: 0;
         width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-        padding: 2rem 0;
+        height: 100vh;
+        background-color: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: scale(1.1);
     }
     
     .nav-menu.active {
-        left: 0;
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
     }
     
     .nav-item {
-        margin: 1.5rem 0;
+        margin: 1rem 0;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    
+    .nav-menu.active .nav-item {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .nav-menu.active .nav-item:nth-child(1) { transition-delay: 0.1s; }
+    .nav-menu.active .nav-item:nth-child(2) { transition-delay: 0.15s; }
+    .nav-menu.active .nav-item:nth-child(3) { transition-delay: 0.2s; }
+    .nav-menu.active .nav-item:nth-child(4) { transition-delay: 0.25s; }
+    .nav-menu.active .nav-item:nth-child(5) { transition-delay: 0.3s; }
     
     .nav-toggle {
         display: block;
-        cursor: pointer;
-        font-size: 1.5rem;
+    }
+    
+    .nav-link {
+        font-size: 1.2rem;
+        padding: 0.8rem 2rem;
+        display: inline-block;
+        position: relative;
+        color: var(--primary-color);
+    }
+    
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: var(--secondary-color);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+    
+    .nav-link:hover::after {
+        width: 30px;
     }
     
     .hero-title {
