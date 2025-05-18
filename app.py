@@ -15,7 +15,7 @@ class Base(DeclarativeBase):
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev_secret_key")
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # Configure upload path
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/uploads')

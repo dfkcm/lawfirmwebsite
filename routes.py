@@ -226,6 +226,16 @@ def makale_detay(id):
                         recent_articles=recent_articles,
                         category_label=category_label)
 
+def get_client_ip():
+    # Render ve diğer proxy'ler için header kontrolleri
+    if request.headers.get('X-Forwarded-For'):
+        # X-Forwarded-For header'ı virgülle ayrılmış IP'leri içerir
+        # İlk IP gerçek client IP'sidir
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    elif request.headers.get('X-Real-IP'):
+        return request.headers.get('X-Real-IP')
+    return request.remote_addr
+
 @app.route('/iletisim', methods=['GET', 'POST'])
 def iletisim():
     # Fetch data for the contact page
@@ -264,7 +274,7 @@ def iletisim():
             email=request.form.get('email'),
             subject=request.form.get('subject'),
             message=request.form.get('message'),
-            ip_address=request.remote_addr
+            ip_address=get_client_ip()
         )
         
         try:
