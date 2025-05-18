@@ -213,11 +213,6 @@ def admin_projects():
             category=form.category.data
         )
         
-        # Eğer form ile resim yüklendiyse kaydet
-        if form.image.data:
-            filename = save_image(form.image.data, 'uploads')
-            project.image = filename
-        
         db.session.add(project)
         db.session.commit()
         flash('Makale başarıyla eklendi.', 'success')
@@ -238,13 +233,6 @@ def admin_edit_project(id):
         project.description = form.description.data
         project.category = form.category.data
         
-        # Handle image upload
-        if form.image.data:
-            if project.image:
-                delete_image(project.image)
-            filename = save_image(form.image.data, 'uploads')
-            project.image = filename
-        
         db.session.commit()
         flash('Makale başarıyla güncellendi.', 'success')
         return redirect(url_for('admin_projects'))
@@ -255,10 +243,6 @@ def admin_edit_project(id):
 @login_required
 def admin_delete_project(id):
     project = Project.query.get_or_404(id)
-    
-    # Delete project image
-    if project.image:
-        delete_image(project.image)
     
     db.session.delete(project)
     db.session.commit()

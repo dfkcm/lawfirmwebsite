@@ -53,8 +53,8 @@ def setup_db():
     conn = sqlite3.connect('instance/portfolio.db')
     c = conn.cursor()
     try:
-        c.execute("ALTER TABLE iletisim ADD COLUMN ip_adresi VARCHAR(45);")
-        print('ip_adresi sütunu eklendi.')
+        c.execute("ALTER TABLE iletisim ADD COLUMN ip_address VARCHAR(45);")
+        print('ip_address sütunu eklendi.')
     except Exception as e:
         print('Zaten var veya hata:', e)
     conn.commit()

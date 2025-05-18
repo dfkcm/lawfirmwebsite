@@ -16,37 +16,33 @@
 <!-- About Content -->
 <section class="section">
     <div class="section-content">
-        <div class="row">
-            <div class="col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="100">
+        <div class="about-layout">
+            <div class="about-main">
                 <div class="bg-white p-5 rounded shadow-sm about-text">
                     {{ settings.about_content|safe }}
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Team Section -->
-<section class="section" style="background-color: var(--light-color);">
-    <div class="section-content">
-        <h2 class="section-title" data-aos="fade-up">Ekibimiz</h2>
-        <div class="lawyers-grid">
-            {% for lawyer in lawyers %}
-            <div class="lawyer-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
-                {% if lawyer.photo %}
-                <img src="{{ url_for('static', filename='uploads/' + lawyer.photo) }}" alt="{{ lawyer.name }}" class="lawyer-image">
-                {% else %}
-                <div class="lawyer-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-user" style="font-size: 3rem; color: var(--gray-color);"></i>
-                </div>
-                {% endif %}
-                <div class="lawyer-content">
-                    <h3 class="lawyer-name">{{ lawyer.name }}</h3>
-                    <div class="lawyer-title">{{ lawyer.title }}</div>
-                    <p class="lawyer-bio">{{ lawyer.bio }}</p>
+            
+            <div class="about-sidebar">
+                <div class="lawyers-grid-sidebar">
+                    {% for lawyer in lawyers %}
+                    <div class="lawyer-card">
+                        {% if lawyer.photo %}
+                        <img src="{{ url_for('static', filename='uploads/' + lawyer.photo) }}" alt="{{ lawyer.name }}" class="lawyer-image">
+                        {% else %}
+                        <div class="lawyer-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="font-size: 3rem; color: var(--gray-color);"></i>
+                        </div>
+                        {% endif %}
+                        <div class="lawyer-content">
+                            <h3 class="lawyer-name">{{ lawyer.name }}</h3>
+                            <div class="lawyer-title">{{ lawyer.title }}</div>
+                            <p class="lawyer-bio">{{ lawyer.bio }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 </section>

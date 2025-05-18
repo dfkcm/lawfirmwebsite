@@ -57,6 +57,10 @@ def makaleler():
     settings = Settings.query.first()
     social = SocialMedia.query.first()
     
+    # Pagination parameters
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    
     # Search functionality
     search_query = request.args.get('search', '')
     category = request.args.get('category', '')
@@ -70,7 +74,11 @@ def makaleler():
     if category:
         query = query.filter(Project.category == category)
     
-    articles = query.order_by(Project.date.desc()).all()
+    # Apply pagination
+    pagination = query.order_by(Project.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    articles = pagination.items
+    total_pages = pagination.pages
+    current_page = pagination.page
     
     # Get categories for filter
     categories = [
@@ -137,7 +145,9 @@ def makaleler():
                         articles=articles,
                         search_query=search_query,
                         current_category=category,
-                        categories=categories)
+                        categories=categories,
+                        total_pages=total_pages,
+                        current_page=current_page)
 
 @app.route('/makale/<int:id>')
 def makale_detay(id):

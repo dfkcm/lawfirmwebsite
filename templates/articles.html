@@ -2,6 +2,113 @@
 
 {% block title %}Makaleler{% endblock %}
 
+{% block extra_css %}
+<style>
+.articles-list {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.article-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.article-card:hover {
+    transform: translateY(-2px);
+}
+
+.article-content {
+    padding: 1.5rem;
+}
+
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.article-date {
+    color: #666;
+}
+
+.article-category {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.article-title {
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+    color: #333;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+.article-description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.read-more {
+    display: inline-flex;
+    align-items: center;
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.read-more:hover {
+    color: var(--primary-color-dark);
+}
+
+.read-more i {
+    margin-left: 0.5rem;
+    font-size: 0.9em;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.pagination .page-item .page-link {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    color: #333;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.pagination .page-item .page-link:hover {
+    background: #f8f9fa;
+}
+
+.pagination .page-item.active .page-link:hover {
+    background: var(--primary-color);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Page Header -->
 <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
@@ -41,31 +148,58 @@
 <section class="section">
     <div class="section-content">
         {% if articles %}
-        <div class="articles-grid">
+        <div class="articles-list">
             {% for article in articles %}
             <div class="article-card">
-                {% if article.image %}
-                <img src="{{ url_for('static', filename='uploads/' + article.image) }}" alt="{{ article.title }}" class="article-image">
-                {% else %}
-                <div class="article-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-file-alt" style="font-size: 3rem; color: var(--gray-color);"></i>
-                </div>
-                {% endif %}
                 <div class="article-content">
-                    <h3 class="article-title">{{ article.title }}</h3>
-                    <div class="article-date">{{ article.date.strftime('%d.%m.%Y') }}</div>
-                    <p class="article-excerpt">{{ article.description[:150] }}{% if article.description|length > 150 %}...{% endif %}</p>
-                    <span class="article-category">
-                        {% for category in categories %}
-                            {% if category.value == article.category %}
-                                {{ category.label }}
-                            {% endif %}
-                        {% endfor %}
-                    </span>
-                    <a href="{{ url_for('makale_detay', id=article.id) }}" class="btn btn-outline mt-3">Devamını Oku</a>
+                    <div class="article-meta">
+                        <span class="article-date">{{ article.date.strftime('%d.%m.%Y') }}</span>
+                        {% set cat_label = category_map[article.category] if article.category in category_map else '' %}
+                        {% if cat_label %}
+                            <span class="article-category">{{ cat_label }}</span>
+                        {% endif %}
+                    </div>
+                    <h2 class="article-title">{{ article.title }}</h2>
+                    <div class="article-description">
+                        {% set description = article.description|striptags %}
+                        {{ description[:300] }}{% if description|length > 300 %}...{% endif %}
+                    </div>
+                    <a href="{{ url_for('makale_detay', id=article.id) }}" class="read-more">
+                        Devamını Oku
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
             {% endfor %}
+
+            <!-- Pagination -->
+            {% if total_pages > 1 %}
+            <nav aria-label="Sayfalama">
+                <ul class="pagination">
+                    {% if current_page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('makaleler', page=current_page-1, search=search_query, category=current_category) }}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for page in range(1, total_pages + 1) %}
+                    <li class="page-item {% if page == current_page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('makaleler', page=page, search=search_query, category=current_category) }}">{{ page }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if current_page < total_pages %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('makaleler', page=current_page+1, search=search_query, category=current_category) }}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
         {% else %}
         <div class="text-center py-5">

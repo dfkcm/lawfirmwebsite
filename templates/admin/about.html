@@ -2,32 +2,86 @@
 
 {% block title %}Hakkımızda{% endblock %}
 
+{% block extra_css %}
+<!-- Quill.js CSS -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+.form-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 30px;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.form-section {
+    margin-bottom: 30px;
+}
+
+.form-section-title {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.ql-editor {
+    min-height: 300px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.ql-toolbar {
+    background: #f8f9fa;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+.ql-container {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border: 1px solid #ced4da;
+    border-top: none;
+}
+
+#editor-container {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px 15px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="form-container">
-        <h1 class="form-title">Hakkımızda İçeriği</h1>
-        
         <form method="POST" action="{{ url_for('admin_about') }}" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    {% if settings.about_image %}
-                    <div class="text-center">
-                        <img src="{{ url_for('static', filename='uploads/' + settings.about_image) }}" alt="Hakkımızda Görseli" class="img-fluid rounded" style="max-height: 200px;" id="preview-about-image">
-                    </div>
-                    {% else %}
-                    <div class="text-center bg-light p-4 rounded" id="about-image-container">
-                        <i class="fas fa-image text-muted fa-3x"></i>
-                        <p class="mt-2 text-muted">Görsel yüklenmemiş</p>
-                    </div>
-                    <img src="" alt="Hakkımızda Görseli" class="img-fluid rounded" id="preview-about-image" style="display: none;">
-                    {% endif %}
-                </div>
-                
-                <div class="col-md-12 mb-3">
-                    <label for="about_title" class="form-label">Başlık</label>
-                    {{ form.about_title(class="form-control", placeholder="Hakkımızda başlığı") }}
+            <div class="form-section">
+                <h3 class="form-section-title">Sayfa Başlığı</h3>
+                <div class="mb-4">
+                    <label for="about_title" class="form-label">Ana Başlık</label>
+                    {{ form.about_title(class="form-control", placeholder="Örn: Kılınç Hukuk ve Danışmanlık") }}
                     {% if form.about_title.errors %}
                         <div class="text-danger mt-1">
                             {% for error in form.about_title.errors %}
@@ -36,10 +90,14 @@
                         </div>
                     {% endif %}
                 </div>
-                
-                <div class="col-md-12 mb-3">
-                    <label for="about_content" class="form-label">İçerik</label>
-                    {{ form.about_content(class="form-control rich-editor", rows=10, placeholder="Hakkımızda içeriği") }}
+            </div>
+            
+            <div class="form-section">
+                <h3 class="form-section-title">Sayfa İçeriği</h3>
+                <div class="mb-4">
+                    <label for="about_content" class="form-label">Ana İçerik</label>
+                    <div id="editor-container"></div>
+                    {{ form.about_content(id="hidden-content", required=true, style="display: none; visibility: hidden; position: absolute; left: -9999px;") }}
                     {% if form.about_content.errors %}
                         <div class="text-danger mt-1">
                             {% for error in form.about_content.errors %}
@@ -48,30 +106,88 @@
                         </div>
                     {% endif %}
                 </div>
-                
-                <div class="col-md-12 mb-3">
-                    <label for="about_image" class="form-label">Görsel</label>
-                    {{ form.about_image(class="form-control", data_preview="preview-about-image") }}
-                    {% if form.about_image.errors %}
-                        <div class="text-danger mt-1">
-                            {% for error in form.about_image.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    <small class="text-muted">Desteklenen formatlar: JPG, PNG</small>
-                </div>
-                
-                <div class="col-md-12 mt-3">
-                    <button type="submit" class="btn btn-admin btn-admin-primary">
-                        <i class="fas fa-save me-2"></i> Kaydet
-                    </button>
-                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary ms-2">
-                        <i class="fas fa-times me-2"></i> İptal
-                    </a>
-                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-admin btn-admin-primary">
+                    <i class="fas fa-save me-2"></i> Değişiklikleri Kaydet
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary ms-2">
+                    <i class="fas fa-times me-2"></i> İptal
+                </a>
             </div>
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Quill.js JavaScript -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+<script>
+(function() {
+    let quill = null;
+    const form = document.querySelector('form');
+    const hiddenInput = document.getElementById('hidden-content');
+
+    // Quill editörünü başlat
+    function initQuill() {
+        quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+                    ['clean'],
+                    ['link']
+                ]
+            },
+            placeholder: 'Hakkımızda içeriğini buraya yazın...'
+        });
+
+        // Mevcut içeriği editöre yükle
+        if (hiddenInput.value) {
+            quill.root.innerHTML = hiddenInput.value;
+        }
+
+        // İçerik değiştiğinde gizli input'u güncelle
+        quill.on('text-change', function() {
+            hiddenInput.value = quill.root.innerHTML;
+        });
+    }
+
+    // Form gönderildiğinde
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            return;
+        }
+
+        if (quill && quill.getLength() > 1) {
+            hiddenInput.value = quill.root.innerHTML;
+            form.submit();
+        } else {
+            alert('Lütfen içerik giriniz.');
+        }
+    });
+
+    // Sayfa yüklendiğinde editörü başlat
+    document.addEventListener('DOMContentLoaded', function() {
+        initQuill();
+    });
+})();
+</script>
 {% endblock %}

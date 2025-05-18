@@ -30,25 +30,6 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-<div id="preloader">
-  <div class="loader-logo">
-    <img src="{{ url_for('static', filename='img/new-logo.png') }}" alt="Logo">
-  </div>
-</div>
-<script>
-  window.addEventListener("load", function () {
-    const preloader = document.getElementById("preloader");
-
-    // 1. Efekt başlasın diye bu sınıfı ekliyoruz
-    preloader.classList.add("fade-out");
-
-    // 2. Efekt bitince tamamen DOM'dan sil
-    preloader.addEventListener("transitionend", function () {
-      preloader.remove();  // logo sahneden iner
-    });
-  });
-</script>
-
     <!-- Header -->
     <header class="header">
         <nav class="navbar">
@@ -82,7 +63,13 @@
             </div>
         </nav>
     </header>
-    
+
+    <div id="preloader">
+        <div class="loader-logo">
+            <img src="{{ url_for('static', filename='img/new-logo.png') }}" alt="Logo">
+        </div>
+    </div>
+
     <!-- Flash Messages -->
     <div class="flash-messages">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -97,7 +84,9 @@
     </div>
     
     <!-- Main Content -->
-    {% block content %}{% endblock %}
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
     
     <!-- Footer -->
     <footer class="footer">
@@ -179,6 +168,39 @@
                 once: false
             });
         });
+
+        // Preloader için yeni kod
+        window.addEventListener("load", function () {
+            const preloader = document.getElementById("preloader");
+            const mainContent = document.querySelector(".main-content");
+
+            // İçeriği başlangıçta gizle
+            mainContent.style.opacity = "0";
+            mainContent.style.transition = "opacity 0.5s ease";
+
+            // Preloader'ı kaldır
+            setTimeout(function() {
+                preloader.classList.add("fade-out");
+                
+                // Preloader kaybolurken içeriği göster
+                setTimeout(function() {
+                    mainContent.style.opacity = "1";
+                    preloader.addEventListener("transitionend", function () {
+                        preloader.remove();
+                    });
+                }, 800);
+            }, 1000);
+        });
+    </script>
+    
+    <!-- CKEditor CDN -->
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (document.querySelector('.rich-editor')) {
+        CKEDITOR.replaceAll('rich-editor');
+      }
+    });
     </script>
     
     {% block extra_js %}{% endblock %}

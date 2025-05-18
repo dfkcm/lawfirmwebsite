@@ -102,9 +102,6 @@ class ProjectForm(FlaskForm):
                             ('hukuk_sosyolojisi', 'Hukuk Sosyolojisi'),
                             ('gayrimenkul', 'Gayrimenkul Hukuku')
                         ])
-    image = FileField('Makale Görseli', validators=[
-        FileAllowed(['jpg', 'jpeg', 'png'], 'Sadece resim dosyaları (.jpg, .png)')
-    ])
     submit = SubmitField('Kaydet')
 
 class SocialMediaForm(FlaskForm):
