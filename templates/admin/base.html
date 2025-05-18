@@ -57,11 +57,6 @@
                         <i class="fas fa-tachometer-alt me-2"></i> Kontrol Paneli
                     </a>
                 </li>
-                <li {% if request.endpoint == 'admin_homepage' %}class="active"{% endif %}>
-                    <a href="{{ url_for('admin_homepage') }}">
-                        <i class="fas fa-home me-2"></i> Ana Sayfa
-                    </a>
-                </li>
                 <li {% if request.endpoint == 'admin_about' %}class="active"{% endif %}>
                     <a href="{{ url_for('admin_about') }}">
                         <i class="fas fa-info-circle me-2"></i> Hakkımızda

@@ -1,6 +1,7 @@
 from app import app, db
 from models import Admin, Settings, User, SocialMedia
 from werkzeug.security import generate_password_hash
+import sqlite3
 
 def setup_db():
     with app.app_context():
@@ -48,6 +49,16 @@ def setup_db():
         # Değişiklikleri kaydet
         db.session.commit()
         print("Veritabanı başarıyla kuruldu ve varsayılan veriler eklendi.")
+
+    conn = sqlite3.connect('instance/portfolio.db')
+    c = conn.cursor()
+    try:
+        c.execute("ALTER TABLE iletisim ADD COLUMN ip_adresi VARCHAR(45);")
+        print('ip_adresi sütunu eklendi.')
+    except Exception as e:
+        print('Zaten var veya hata:', e)
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     setup_db()

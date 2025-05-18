@@ -124,6 +124,7 @@ class SettingsForm(FlaskForm):
 class HomepageForm(FlaskForm):
     homepage_title = StringField('Ana Başlık', validators=[DataRequired()])
     homepage_subtitle = StringField('Alt Başlık')
+    homepage_quote = StringField('Alıntı')
     homepage_content = TextAreaField('İçerik', validators=[DataRequired()])
     homepage_image = FileField('Ana Sayfa Görseli', validators=[
         FileAllowed(['jpg', 'jpeg', 'png'], 'Sadece resim dosyaları (.jpg, .png)')
@@ -152,7 +153,7 @@ class ContactForm(FlaskForm):
     full_name = StringField('Ad Soyad', validators=[DataRequired()])
     email = StringField('E-posta', validators=[DataRequired(), Email()])
     subject = StringField('Konu', validators=[DataRequired()])
-    message = TextAreaField('Mesaj', validators=[DataRequired()])
+    message = TextAreaField('Mesaj', validators=[DataRequired(), Length(max=2000, message='Mesajınız en fazla 2000 karakter olabilir.')])
     captcha = StringField('Güvenlik Kodu', validators=[DataRequired()])
     csrf_token = HiddenField()
     submit = SubmitField('Gönder')

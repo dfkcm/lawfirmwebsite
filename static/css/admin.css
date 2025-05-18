@@ -195,28 +195,38 @@ a[aria-expanded="true"] {
 }
 
 .stats-card-primary {
-    background: linear-gradient(45deg, #1a3263, #446ab8);
+    background: #1a3263;
 }
 
 .stats-card-success {
-    background: linear-gradient(45deg, #28a745, #5fd97a);
+    background: #28a745;
 }
 
 .stats-card-warning {
-    background: linear-gradient(45deg, #ffc107, #ffdb6d);
+    background: #ffc107;
 }
 
 .stats-card-danger {
-    background: linear-gradient(45deg, #dc3545, #f07684);
+    background: #dc3545;
 }
 
 .stats-card-info {
-    background: linear-gradient(45deg, #17a2b8, #65d6e9);
+    background: #17a2b8;
 }
 
 .stats-card-icon {
     font-size: 3rem;
     opacity: 0.7;
+}
+
+.stats-card-info h3, .stats-card-info p {
+    background: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0;
+    border-radius: 0;
+    display: block;
 }
 
 .stats-card-info h3 {

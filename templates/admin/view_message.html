@@ -41,8 +41,8 @@
             
             <div class="message-content">
                 <strong>Mesaj:</strong>
-                <div class="p-3 bg-light mt-2 rounded">
-                    {{ message.message|nl2br }}
+                <div class="p-3 bg-light mt-2 rounded" style="word-break: break-word; max-width: 100%; white-space: pre-line;">
+                    {{ message.message.replace('\n', '<br>')|safe }}
                 </div>
             </div>
         </div>

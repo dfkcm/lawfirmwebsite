@@ -86,7 +86,11 @@
                     
                     <div class="form-group">
                         <label for="message" class="form-label">Mesajınız</label>
-                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        <textarea class="form-control" id="message" name="message" rows="5" required maxlength="2000" oninput="updateCharCount()" onfocus="showCharLimit()"></textarea>
+                        <div id="char-limit-info" style="display:none; color:#fff; background:#c3a47f; border-radius:6px; padding:8px 16px; margin-top:8px; font-weight:500; box-shadow:0 2px 8px #0002; position:absolute; z-index:10; animation:fadeInOut 2.5s forwards;">
+                            Mesajınız en fazla 2000 karakter olabilir.
+                        </div>
+                        <div id="char-count" style="font-size:0.95em; color:#888; margin-top:4px; text-align:right;">0 / 2000</div>
                     </div>
                     
                     <div class="captcha-container">
@@ -109,4 +113,34 @@
         </div>
     </div>
 </section>
+
+{% block extra_js %}
+<script>
+function updateCharCount() {
+    var textarea = document.getElementById('message');
+    var count = textarea.value.length;
+    var info = document.getElementById('char-count');
+    info.textContent = count + ' / 2000';
+    if(count >= 2000) {
+        textarea.value = textarea.value.substring(0, 2000);
+        info.style.color = '#dc3545';
+    } else {
+        info.style.color = '#888';
+    }
+}
+function showCharLimit() {
+    var info = document.getElementById('char-limit-info');
+    info.style.display = 'block';
+    setTimeout(function(){ info.style.display = 'none'; }, 2500);
+}
+</script>
+<style>
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+</style>
+{% endblock %}
 {% endblock %}

@@ -18,6 +18,7 @@
                         <th width="20%">Gönderen</th>
                         <th width="15%">E-posta</th>
                         <th width="20%">Konu</th>
+                        <th width="10%">IP Adresi</th>
                         <th width="15%">Tarih</th>
                         <th width="15%">İşlemler</th>
                     </tr>
@@ -29,6 +30,7 @@
                         <td>{{ message.full_name }}</td>
                         <td>{{ message.email }}</td>
                         <td>{{ message.subject }}</td>
+                        <td>{{ message.ip_address or 'Bilinmiyor' }}</td>
                         <td>{{ message.date.strftime('%d.%m.%Y %H:%M') }}</td>
                         <td class="action-buttons">
                             <a href="{{ url_for('admin_view_message', id=message.id) }}" class="action-btn action-btn-view">
