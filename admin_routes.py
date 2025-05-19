@@ -442,7 +442,6 @@ def admin_visitor_logs():
     # Toplam kayıt sayısını 1000 ile sınırla
     if logs.total > 1000:
         logs.total = 1000
-        logs.pages = (1000 + per_page - 1) // per_page
     
     return render_template('admin/visitor_logs.html',
                          settings=settings,
