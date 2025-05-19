@@ -192,34 +192,32 @@ a[aria-expanded="true"] {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
 .stats-card-primary {
-    background: #1a3263;
+    background: linear-gradient(135deg, #4e54c8, #8f94fb);
 }
 
 .stats-card-success {
-    background: #28a745;
+    background: linear-gradient(135deg, #11998e, #38ef7d);
 }
 
 .stats-card-warning {
-    background: #ffc107;
+    background: linear-gradient(135deg, #f2994a, #f2c94c);
 }
 
-.stats-card-danger {
-    background: #dc3545;
-}
-
-.stats-card-info {
-    background: #17a2b8;
+.stats-card-blue {
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
 }
 
 .stats-card-icon {
     font-size: 3rem;
     opacity: 0.7;
+    color: #fff;
 }
 
-.stats-card-info h3, .stats-card-info p {
+.stats-card-content h3, .stats-card-content p {
     background: none !important;
     background-color: transparent !important;
     box-shadow: none !important;
@@ -229,16 +227,17 @@ a[aria-expanded="true"] {
     display: block;
 }
 
-.stats-card-info h3 {
+.stats-card-content h3 {
     font-size: 1.5rem;
     margin-bottom: 5px;
     color: #fff;
 }
 
-.stats-card-info p {
+.stats-card-content p {
     margin: 0;
     font-size: 1rem;
     opacity: 0.8;
+    color: #fff;
 }
 
 /* Forms */

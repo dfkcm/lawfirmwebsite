@@ -1,10 +1,11 @@
 import os
 import logging
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
 from werkzeug.middleware.proxy_fix import ProxyFix
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -49,6 +50,38 @@ def load_user(user_id):
     from models import Admin
     return Admin.query.get(int(user_id))
 
+@app.before_request
+def log_visitor():
+    # Admin paneli ve static dosyaları hariç tut
+    if not request.path.startswith('/admin') and not request.path.startswith('/static'):
+        from models import VisitorLog
+        
+        # Mobil cihaz kontrolü
+        user_agent = request.user_agent
+        is_mobile = any(device in user_agent.string.lower() 
+                       for device in ['mobile', 'android', 'iphone', 'ipad', 'windows phone'])
+        
+        # Sayfa yolunu anlaşılır isme dönüştür
+        page_paths = {
+            '/': 'Anasayfa',
+            '/hakkimizda': 'Hakkımızda Sayfası',
+            '/iletisim': 'İletişim Sayfası',
+            '/makaleler': 'Makaleler Sayfası',
+            '/uzmanlik-alanlari': 'Uzmanlık Alanları',
+            '/avukatlarimiz': 'Avukatlarımız',
+        }
+        page_name = page_paths.get(request.path, request.path)
+        
+        visitor_log = VisitorLog(
+            ip_address=request.remote_addr,
+            user_agent=user_agent.string,
+            page_visited=page_name,
+            visit_time=datetime.now(),
+            is_mobile=is_mobile
+        )
+        db.session.add(visitor_log)
+        db.session.commit()
+
 # Create all tables
 with app.app_context():
     try:
@@ -79,3 +112,9 @@ with app.app_context():
             logging.info("Created default settings")
     except Exception as e:
         logging.error(f"Veritabanı başlatma hatası: {e}")
+
+from routes import *
+from admin_routes import *
+
+if __name__ == '__main__':
+    app.run(debug=True)

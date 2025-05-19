@@ -48,7 +48,7 @@
                     <a href="{{ url_for('hakkimizda') }}" class="nav-link">Hakkımızda</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('uzmanlik_alanlari') }}" class="nav-link">Uzmanlık Alanları</a>
+                    <a href="{{ url_for('calisma_alanlarimiz') }}" class="nav-link">Çalışma Alanlarımız</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('makaleler') }}" class="nav-link">Makaleler</a>
@@ -90,62 +90,59 @@
     
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-grid">
-                <div>
-                    <div class="footer-logo">{{ settings.site_name }}</div>
-                    <p class="footer-description">{{ settings.site_description }}</p>
-                    <div class="footer-social">
-                        <a href="{{ social.facebook }}" class="footer-social-link" target="_blank">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="{{ social.instagram }}" class="footer-social-link" target="_blank">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="{{ social.twitter }}" class="footer-social-link" target="_blank">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>{{ settings.site_name }}</h5>
+                    <p>{{ settings.site_description }}</p>
                 </div>
-                
-                <div>
-                    <h3 class="footer-heading">Hızlı Erişim</h3>
-                    <ul class="footer-links">
-                        <li class="footer-link">
-                            <a href="{{ url_for('index') }}">Anasayfa</a>
-                        </li>
-                        <li class="footer-link">
-                            <a href="{{ url_for('hakkimizda') }}">Hakkımızda</a>
-                        </li>
-                        <li class="footer-link">
-                            <a href="{{ url_for('uzmanlik_alanlari') }}">Uzmanlık Alanları</a>
-                        </li>
-                        <li class="footer-link">
-                            <a href="{{ url_for('makaleler') }}">Makaleler</a>
-                        </li>
-                        <li class="footer-link">
-                            <a href="{{ url_for('iletisim') }}">İletişim</a>
-                        </li>
+                <div class="col-md-4">
+                    <h5>Hızlı Bağlantılar</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('index') }}">Anasayfa</a></li>
+                        <li><a href="{{ url_for('hakkimizda') }}">Hakkımızda</a></li>
+                        <li><a href="{{ url_for('calisma_alanlarimiz') }}">Çalışma Alanlarımız</a></li>
+                        <li><a href="{{ url_for('makaleler') }}">Makaleler</a></li>
+                        <li><a href="{{ url_for('iletisim') }}">İletişim</a></li>
                     </ul>
                 </div>
-                
-                <div>
-                    <h3 class="footer-heading">İletişim</h3>
-                    <ul class="footer-links">
-                        {% if user %}
-                        <li class="footer-link">
-                            <i class="fas fa-phone me-2"></i> {{ user.phone }}
-                        </li>
-                        <li class="footer-link">
-                            <i class="fas fa-envelope me-2"></i> {{ user.email }}
-                        </li>
+                <div class="col-md-4">
+                    {% if user %}
+                    <h5>İletişim</h5>
+                    <ul class="list-unstyled footer-contact">
+                        {% if user.phone %}
+                        <li><i class="fas fa-phone"></i> {{ user.phone }}</li>
+                        {% endif %}
+                        {% if user.email %}
+                        <li><i class="fas fa-envelope"></i> {{ user.email }}</li>
                         {% endif %}
                     </ul>
+                    {% endif %}
+                    {% if social %}
+                    <div class="social-links">
+                        {% if social.facebook %}
+                        <a href="{{ social.facebook }}" target="_blank">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        {% endif %}
+                        {% if social.instagram %}
+                        <a href="{{ social.instagram }}" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        {% endif %}
+                        {% if social.twitter %}
+                        <a href="{{ social.twitter }}" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-            
-            <div class="footer-copyright">
-                {{ settings.site_footer }}
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="mb-0">{{ settings.site_footer }}</p>
+                </div>
             </div>
         </div>
     </footer>
@@ -166,6 +163,20 @@
                 duration: 800,
                 easing: 'ease-in-out',
                 once: false
+            });
+
+            // Sayfa yüklendiğinde en üste kaydır
+            window.scrollTo(0, 0);
+
+            // Tüm menü linklerine tıklama olayı ekle
+            document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    // Sayfanın en üstüne yumuşak geçiş yap
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'instant'
+                    });
+                });
             });
         });
 
@@ -206,3 +217,4 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+

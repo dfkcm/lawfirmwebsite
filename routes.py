@@ -2,7 +2,7 @@ import os
 from flask import render_template, request, redirect, url_for, flash, session, jsonify, abort
 from flask_login import login_required, current_user
 from app import app, db
-from models import Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer
+from models import Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer, Article, Category
 from forms import ContactForm
 from utils import generate_captcha_code, track_visitor
 import secrets
@@ -53,115 +53,103 @@ def hakkimizda():
                          social=social,
                          lawyers=lawyers)
 
-@app.route('/uzmanlik-alanlari')
-def uzmanlik_alanlari():
+@app.route('/calisma-alanlarimiz')
+def calisma_alanlarimiz():
     # Fetch data for the practice areas page
     settings = Settings.query.first()
     social = SocialMedia.query.first()
-    expertise_list = Expertise.query.all()
+    calisma_list = Expertise.query.all()
     
     return render_template('practice_areas.html',
                          settings=settings,
                          social=social,
-                         expertise_list=expertise_list)
+                         calisma_list=calisma_list)
 
 @app.route('/makaleler')
 def makaleler():
-    # Fetch data for the articles page
-    settings = Settings.query.first()
-    social = SocialMedia.query.first()
-    
-    # Pagination parameters
     page = request.args.get('page', 1, type=int)
     per_page = 10
-    
-    # Search functionality
-    search_query = request.args.get('search', '')
+    settings = Settings.query.first()
+    social = SocialMedia.query.first()
+    search_query = request.args.get('q', '')
     category = request.args.get('category', '')
-    
     query = Project.query
-    
     if search_query:
-        query = query.filter(Project.title.ilike(f'%{search_query}%') | 
-                            Project.description.ilike(f'%{search_query}%'))
-    
+        query = query.filter(Project.title.ilike(f'%{search_query}%') | Project.description.ilike(f'%{search_query}%'))
     if category:
         query = query.filter(Project.category == category)
-    
-    # Apply pagination
-    pagination = query.order_by(Project.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
-    articles = pagination.items
-    total_pages = pagination.pages
-    current_page = pagination.page
-    
-    # Get categories for filter
-    categories = [
-        {'value': 'anayasa', 'label': 'Anayasa Hukuku'},
-        {'value': 'ceza', 'label': 'Ceza Hukuku'},
-        {'value': 'ceza_muhakemesi', 'label': 'Ceza Muhakemesi Hukuku'},
-        {'value': 'ceza_infaz', 'label': 'Ceza İnfaz Hukuku'},
-        {'value': 'idare', 'label': 'İdare Hukuku'},
-        {'value': 'vergi', 'label': 'Vergi Hukuku'},
-        {'value': 'disiplin', 'label': 'Disiplin Hukuku'},
-        {'value': 'insan_haklari', 'label': 'İnsan Hakları Hukuku'},
-        {'value': 'devletler_genel', 'label': 'Devletler Genel Hukuku'},
-        {'value': 'medeni', 'label': 'Medeni Hukuk'},
-        {'value': 'kisiler', 'label': 'Kişiler Hukuku'},
-        {'value': 'aile', 'label': 'Aile Hukuku'},
-        {'value': 'miras', 'label': 'Miras Hukuku'},
-        {'value': 'esya', 'label': 'Eşya Hukuku'},
-        {'value': 'borclar', 'label': 'Borçlar Hukuku'},
-        {'value': 'ticaret', 'label': 'Ticaret Hukuku'},
-        {'value': 'ticari_isletme', 'label': 'Ticari İşletme Hukuku'},
-        {'value': 'sirketler', 'label': 'Şirketler Hukuku'},
-        {'value': 'kiymetli_evrak', 'label': 'Kıymetli Evrak Hukuku'},
-        {'value': 'deniz_ticareti', 'label': 'Deniz Ticareti Hukuku'},
-        {'value': 'sigorta', 'label': 'Sigorta Hukuku'},
-        {'value': 'is', 'label': 'İş Hukuku'},
-        {'value': 'toplu_is', 'label': 'Toplu İş Hukuku'},
-        {'value': 'sosyal_guvenlik', 'label': 'Sosyal Güvenlik Hukuku'},
-        {'value': 'icra_iflas', 'label': 'İcra ve İflas Hukuku'},
-        {'value': 'uluslararasi_ozel', 'label': 'Uluslararası Özel Hukuk'},
-        {'value': 'uluslararasi_kamu', 'label': 'Uluslararası Kamu Hukuku'},
-        {'value': 'fikri_sinai', 'label': 'Fikri ve Sınai Mülkiyet Hukuku'},
-        {'value': 'tuketici', 'label': 'Tüketici Hukuku'},
-        {'value': 'rekabet', 'label': 'Rekabet Hukuku'},
-        {'value': 'tasima', 'label': 'Taşıma Hukuku'},
-        {'value': 'spor', 'label': 'Spor Hukuku'},
-        {'value': 'bilisim', 'label': 'Bilişim Hukuku'},
-        {'value': 'saglik', 'label': 'Sağlık Hukuku'},
-        {'value': 'tip', 'label': 'Tıp Hukuku'},
-        {'value': 'medya_basin', 'label': 'Medya ve Basın Hukuku'},
-        {'value': 'enerji', 'label': 'Enerji Hukuku'},
-        {'value': 'cevre', 'label': 'Çevre Hukuku'},
-        {'value': 'insaat', 'label': 'İnşaat Hukuku'},
-        {'value': 'ulastirma', 'label': 'Ulaştırma Hukuku'},
-        {'value': 'hava_uzay', 'label': 'Hava ve Uzay Hukuku'},
-        {'value': 'tarim', 'label': 'Tarım Hukuku'},
-        {'value': 'turizm', 'label': 'Turizm Hukuku'},
-        {'value': 'kulturel_miras', 'label': 'Kültürel Miras Hukuku'},
-        {'value': 'avrupa_birligi', 'label': 'Avrupa Birliği Hukuku'},
-        {'value': 'uluslararasi_ticaret', 'label': 'Uluslararası Ticaret Hukuku'},
-        {'value': 'uluslararasi_ceza', 'label': 'Uluslararası Ceza Hukuku'},
-        {'value': 'secim', 'label': 'Seçim Hukuku'},
-        {'value': 'imar', 'label': 'İmar Hukuku'},
-        {'value': 'noterlik', 'label': 'Noterlik Hukuku'},
-        {'value': 'avukatlik', 'label': 'Avukatlık Hukuku'},
-        {'value': 'yargilama', 'label': 'Yargılama Hukuku'},
-        {'value': 'hukuk_felsefesi', 'label': 'Hukuk Felsefesi'},
-        {'value': 'hukuk_sosyolojisi', 'label': 'Hukuk Sosyolojisi'},
-        {'value': 'gayrimenkul', 'label': 'Gayrimenkul Hukuku'}
-    ]
-    
+    total_articles = query.count()
+    total_pages = (total_articles + per_page - 1) // per_page
+    offset = (page - 1) * per_page
+    articles = query.order_by(Project.date.desc()).offset(offset).limit(per_page).all()
+    categories = db.session.query(Project.category).distinct().all()
+    categories = [cat[0] for cat in categories if cat[0]]
+    category_map = {
+        'anayasa': 'Anayasa Hukuku',
+        'ceza': 'Ceza Hukuku',
+        'ceza_muhakemesi': 'Ceza Muhakemesi Hukuku',
+        'ceza_infaz': 'Ceza İnfaz Hukuku',
+        'idare': 'İdare Hukuku',
+        'vergi': 'Vergi Hukuku',
+        'disiplin': 'Disiplin Hukuku',
+        'insan_haklari': 'İnsan Hakları Hukuku',
+        'devletler_genel': 'Devletler Genel Hukuku',
+        'medeni': 'Medeni Hukuk',
+        'kisiler': 'Kişiler Hukuku',
+        'aile': 'Aile Hukuku',
+        'miras': 'Miras Hukuku',
+        'esya': 'Eşya Hukuku',
+        'borclar': 'Borçlar Hukuku',
+        'ticaret': 'Ticaret Hukuku',
+        'ticari_isletme': 'Ticari İşletme Hukuku',
+        'sirketler': 'Şirketler Hukuku',
+        'kiymetli_evrak': 'Kıymetli Evrak Hukuku',
+        'deniz_ticareti': 'Deniz Ticareti Hukuku',
+        'sigorta': 'Sigorta Hukuku',
+        'is': 'İş Hukuku',
+        'toplu_is': 'Toplu İş Hukuku',
+        'sosyal_guvenlik': 'Sosyal Güvenlik Hukuku',
+        'icra_iflas': 'İcra ve İflas Hukuku',
+        'uluslararasi_ozel': 'Uluslararası Özel Hukuk',
+        'uluslararasi_kamu': 'Uluslararası Kamu Hukuku',
+        'fikri_sinai': 'Fikri ve Sınai Mülkiyet Hukuku',
+        'tuketici': 'Tüketici Hukuku',
+        'rekabet': 'Rekabet Hukuku',
+        'tasima': 'Taşıma Hukuku',
+        'spor': 'Spor Hukuku',
+        'bilisim': 'Bilişim Hukuku',
+        'saglik': 'Sağlık Hukuku',
+        'tip': 'Tıp Hukuku',
+        'medya_basin': 'Medya ve Basın Hukuku',
+        'enerji': 'Enerji Hukuku',
+        'cevre': 'Çevre Hukuku',
+        'insaat': 'İnşaat Hukuku',
+        'ulastirma': 'Ulaştırma Hukuku',
+        'hava_uzay': 'Hava ve Uzay Hukuku',
+        'tarim': 'Tarım Hukuku',
+        'turizm': 'Turizm Hukuku',
+        'kulturel_miras': 'Kültürel Miras Hukuku',
+        'avrupa_birligi': 'Avrupa Birliği Hukuku',
+        'uluslararasi_ticaret': 'Uluslararası Ticaret Hukuku',
+        'uluslararasi_ceza': 'Uluslararası Ceza Hukuku',
+        'secim': 'Seçim Hukuku',
+        'imar': 'İmar Hukuku',
+        'noterlik': 'Noterlik Hukuku',
+        'avukatlik': 'Avukatlık Hukuku',
+        'yargilama': 'Yargılama Hukuku',
+        'hukuk_felsefesi': 'Hukuk Felsefesi',
+        'hukuk_sosyolojisi': 'Hukuk Sosyolojisi',
+        'gayrimenkul': 'Gayrimenkul Hukuku'
+    }
+    categories_with_labels = [(cat, category_map.get(cat, cat)) for cat in categories]
     return render_template('articles.html',
-                        settings=settings,
-                        social=social,
-                        articles=articles,
-                        search_query=search_query,
-                        current_category=category,
-                        categories=categories,
-                        total_pages=total_pages,
-                        current_page=current_page)
+                         settings=settings,
+                         social=social,
+                         articles=articles,
+                         categories=categories_with_labels,
+                         current_page=page,
+                         total_pages=total_pages,
+                         category_map=category_map)
 
 @app.route('/makale/<int:id>')
 def makale_detay(id):
@@ -238,7 +226,8 @@ def makale_detay(id):
                         article=article,
                         social=social,
                         recent_articles=recent_articles,
-                        category_label=category_label)
+                        category_label=category_label,
+                        category_map=category_map)
 
 def get_client_ip():
     # Render ve diğer proxy'ler için header kontrolleri

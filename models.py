@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from app import db
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Float, Date
@@ -10,7 +10,7 @@ class Admin(UserMixin, db.Model):
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(256), nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
     
     def __repr__(self):
         return f'<Admin {self.username}>'
@@ -89,7 +89,7 @@ class Project(db.Model):
     description = Column('projeaciklama', Text, nullable=False)
     category = Column('kategori', String(50), nullable=True)  # Hukuk alanı kategorisi
     image = Column('projegorsel', String(255), nullable=True)  # Fotoğraf zorunlu değil
-    date = Column('tarih', DateTime, default=datetime.datetime.utcnow)  # Tarih bilgisi
+    date = Column('tarih', DateTime, default=datetime.utcnow)  # Tarih bilgisi
     
     def __repr__(self):
         return f'<Project {self.title}>'
@@ -112,7 +112,7 @@ class Contact(db.Model):
     subject = Column('konu', String(255), nullable=False)
     message = Column('mesaj', Text, nullable=False)
     ip_address = Column('ip_address', String(45), nullable=True)  # IPv6 için 45 karakter yeterli
-    date = Column('tarih', DateTime, default=datetime.datetime.utcnow)
+    date = Column('tarih', DateTime, default=datetime.utcnow)
     
     def __repr__(self):
         return f'<Contact {self.full_name}>'
@@ -121,14 +121,14 @@ class VisitorLog(db.Model):
     __tablename__ = 'visitor_logs'
     id = Column(Integer, primary_key=True)
     ip_address = Column(String(45), nullable=False)
-    user_agent = Column(String(255))
+    user_agent = Column(String(255), nullable=False)
+    platform = Column(String(20), nullable=True)
+    referrer = Column(String(255), nullable=True)
     page_visited = Column(String(255), nullable=False)
-    referrer = Column(String(255))
-    visit_time = Column(DateTime, default=datetime.datetime.utcnow)
+    visit_time = Column(DateTime, nullable=False, default=datetime.utcnow)
     country = Column(String(100))
     city = Column(String(100))
     browser = Column(String(100))
-    platform = Column(String(100))
     is_mobile = Column(Boolean, default=False)
     session_id = Column(String(100))  # Aynı ziyaretçinin farklı sayfa ziyaretlerini gruplamak için
 
@@ -151,3 +151,38 @@ class DailyAnalytics(db.Model):
 
     def __repr__(self):
         return f'<DailyAnalytics {self.date} - {self.total_visits} visits>'
+
+class Category(db.Model):
+    __tablename__ = 'kategoriler'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    slug = Column(String(100), unique=True, nullable=False)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationship with articles
+    articles = relationship('Article', backref='category', lazy=True)
+    
+    def __repr__(self):
+        return f'<Category {self.name}>'
+
+class Article(db.Model):
+    __tablename__ = 'makaleler'
+    id = Column(Integer, primary_key=True)
+    title = Column(String(255), nullable=False)
+    slug = Column(String(255), unique=True, nullable=False)
+    content = Column(Text, nullable=False)
+    summary = Column(Text, nullable=True)
+    image = Column(String(255), nullable=True)
+    category_id = Column(Integer, ForeignKey('kategoriler.id'), nullable=True)
+    author_id = Column(Integer, ForeignKey('admin.id'), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_published = Column(Boolean, default=True)
+    views = Column(Integer, default=0)
+    
+    # Relationships
+    author = relationship('Admin', backref='articles')
+    
+    def __repr__(self):
+        return f'<Article {self.title}>'

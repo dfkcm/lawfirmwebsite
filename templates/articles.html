@@ -2,113 +2,6 @@
 
 {% block title %}Makaleler{% endblock %}
 
-{% block extra_css %}
-<style>
-.articles-list {
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.article-card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 1.5rem;
-    transition: transform 0.2s;
-}
-
-.article-card:hover {
-    transform: translateY(-2px);
-}
-
-.article-content {
-    padding: 1.5rem;
-}
-
-.article-meta {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
-}
-
-.article-date {
-    color: #666;
-}
-
-.article-category {
-    background: #f0f0f0;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-}
-
-.article-title {
-    font-size: 1.4rem;
-    margin-bottom: 0.75rem;
-    color: #333;
-    line-height: 1.4;
-    font-weight: 600;
-}
-
-.article-description {
-    font-size: 1rem;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-}
-
-.read-more {
-    display: inline-flex;
-    align-items: center;
-    color: var(--primary-color);
-    font-weight: 500;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-}
-
-.read-more:hover {
-    color: var(--primary-color-dark);
-}
-
-.read-more i {
-    margin-left: 0.5rem;
-    font-size: 0.9em;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-}
-
-.pagination .page-item .page-link {
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    color: #333;
-    background: #fff;
-    border: 1px solid #ddd;
-}
-
-.pagination .page-item.active .page-link {
-    background: var(--primary-color);
-    color: #fff;
-    border-color: var(--primary-color);
-}
-
-.pagination .page-item .page-link:hover {
-    background: #f8f9fa;
-}
-
-.pagination .page-item.active .page-link:hover {
-    background: var(--primary-color);
-}
-</style>
-{% endblock %}
-
 {% block content %}
 <!-- Page Header -->
 <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
@@ -122,17 +15,20 @@
 <section class="section" style="padding-bottom: 0;">
     <div class="section-content">
         <div class="bg-white p-4 rounded shadow-sm">
-            <form id="searchForm" class="row g-3">
+            <form id="searchForm" class="row g-3" method="get">
+                <input type="hidden" name="page" value="1">
                 <div class="col-md-6">
                     <label for="searchQuery" class="form-label">Arama</label>
-                    <input type="text" class="form-control" id="searchQuery" name="search" placeholder="Makale ara..." value="{{ search_query }}">
+                    <input type="text" class="form-control" id="searchQuery" name="q" value="{{ request.args.get('q', '') }}" placeholder="Makale ara...">
                 </div>
                 <div class="col-md-4">
-                    <label for="categorySelect" class="form-label">Hukuk Alanı</label>
-                    <select class="form-control" id="categorySelect" name="category">
-                        <option value="">Tümü</option>
-                        {% for category in categories %}
-                        <option value="{{ category.value }}" {% if current_category == category.value %}selected{% endif %}>{{ category.label }}</option>
+                    <label for="category" class="form-label">Kategori</label>
+                    <select class="form-select" id="category" name="category">
+                        <option value="">Tüm Kategoriler</option>
+                        {% for category, label in categories %}
+                        <option value="{{ category }}" {% if request.args.get('category') == category %}selected{% endif %}>
+                            {{ label }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
@@ -144,71 +40,108 @@
     </div>
 </section>
 
-<!-- Articles List -->
+<!-- Articles Section -->
 <section class="section">
     <div class="section-content">
-        {% if articles %}
         <div class="articles-list">
             {% for article in articles %}
-            <div class="article-card">
+            <article class="article-card">
                 <div class="article-content">
-                    <div class="article-meta">
-                        <span class="article-date">{{ article.date.strftime('%d.%m.%Y') }}</span>
-                        {% set cat_label = category_map[article.category] if article.category in category_map else '' %}
-                        {% if cat_label %}
-                            <span class="article-category">{{ cat_label }}</span>
-                        {% endif %}
+                    <div class="article-header">
+                        <div class="article-meta d-flex justify-content-between align-items-center mb-2">
+                            <span class="article-date"><i class="far fa-calendar-alt me-1"></i>{{ article.date.strftime('%d.%m.%Y') }}</span>
+                            {% if article.category %}
+                            <span class="article-category"><i class="fas fa-tag me-1"></i>{{ category_map[article.category] if article.category in category_map else article.category }}</span>
+                            {% endif %}
+                        </div>
+                        <h2 class="article-title">{{ article.title }}</h2>
                     </div>
-                    <h2 class="article-title">{{ article.title }}</h2>
-                    <div class="article-description">
-                        {% set description = article.description|striptags %}
-                        {{ description[:300] }}{% if description|length > 300 %}...{% endif %}
-                    </div>
-                    <a href="{{ url_for('makale_detay', id=article.id) }}" class="read-more">
-                        Devamını Oku
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <p class="article-excerpt">{{ article.description|striptags|truncate(200) }}</p>
+                    <a href="{{ url_for('makale_detay', id=article.id) }}" class="read-more">Devamını Oku</a>
                 </div>
-            </div>
+            </article>
             {% endfor %}
+        </div>
 
-            <!-- Pagination -->
-            {% if total_pages > 1 %}
-            <nav aria-label="Sayfalama">
-                <ul class="pagination">
-                    {% if current_page > 1 %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ url_for('makaleler', page=current_page-1, search=search_query, category=current_category) }}">
+        <!-- Pagination -->
+        {% if total_pages and total_pages > 1 %}
+        <div class="pagination-container">
+            <ul class="pagination">
+                {% set args = request.args.copy() %}
+                {% if current_page > 1 %}
+                    {% set prev_page = current_page-1 %}
+                    {% if prev_page == 1 %}
+                        {% set _ = args.pop('page', None) %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('makaleler', **args) }}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        {% set _ = args.update({'page': prev_page}) %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('makaleler', **args) }}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">
                             <i class="fas fa-chevron-left"></i>
                         </a>
                     </li>
+                {% endif %}
+                
+                {% for page in range(1, total_pages + 1) %}
+                    {% if page == 1 %}
+                        {% set _ = args.pop('page', None) %}
+                        <li class="page-item {% if page == current_page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('makaleler', **args) }}">{{ page }}</a>
+                        </li>
+                    {% else %}
+                        {% set _ = args.update({'page': page}) %}
+                        <li class="page-item {% if page == current_page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('makaleler', **args) }}">{{ page }}</a>
+                        </li>
                     {% endif %}
-
-                    {% for page in range(1, total_pages + 1) %}
-                    <li class="page-item {% if page == current_page %}active{% endif %}">
-                        <a class="page-link" href="{{ url_for('makaleler', page=page, search=search_query, category=current_category) }}">{{ page }}</a>
-                    </li>
-                    {% endfor %}
-
-                    {% if current_page < total_pages %}
+                {% endfor %}
+                
+                {% if current_page < total_pages %}
+                    {% set next_page = current_page+1 %}
+                    {% set _ = args.update({'page': next_page}) %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ url_for('makaleler', page=current_page+1, search=search_query, category=current_category) }}">
+                        <a class="page-link" href="{{ url_for('makaleler', **args) }}">
                             <i class="fas fa-chevron-right"></i>
                         </a>
                     </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            {% endif %}
-        </div>
-        {% else %}
-        <div class="text-center py-5">
-            <i class="fas fa-search fa-3x mb-3 text-muted"></i>
-            <h3>Sonuç Bulunamadı</h3>
-            <p>Arama kriterlerinize uygun makale bulunamadı.</p>
-            <a href="{{ url_for('makaleler') }}" class="btn btn-primary mt-3">Tüm Makaleleri Görüntüle</a>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
         {% endif %}
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sadece arama formu submit'inde müdahale et
+    const searchForm = document.getElementById('searchForm');
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const searchParams = new URLSearchParams(formData);
+        // Her aramada sayfa 1'e dön
+        searchParams.set('page', '1');
+        window.location.href = '{{ url_for("makaleler") }}?' + searchParams.toString();
+    });
+});
+</script>
 {% endblock %}

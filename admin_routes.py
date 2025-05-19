@@ -4,13 +4,13 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from app import app, db
-from models import Admin, Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer, VisitorLog, DailyAnalytics
+from models import Admin, Settings, User, Service, Expertise, Project, SocialMedia, Contact, Lawyer, VisitorLog
 from forms import (LoginForm, ChangePasswordForm, ProfileForm, ServiceForm, 
                   ExpertiseForm, ProjectForm, SocialMediaForm, SettingsForm,
                   HomepageForm, AboutForm, LawyerForm)
 from utils import save_image, delete_image
 import secrets
-from datetime import date, timedelta, datetime
+from datetime import datetime, timedelta
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -156,48 +156,31 @@ def admin_delete_service(id):
     flash('Hizmet başarıyla silindi.', 'success')
     return redirect(url_for('admin_services'))
 
-@app.route('/admin/expertise', methods=['GET', 'POST'])
+@app.route('/admin/calisma-alanlarimiz', methods=['GET', 'POST'])
 @login_required
-def admin_expertise():
+def admin_calisma_alanlarimiz():
     settings = Settings.query.first()
-    expertise_list = Expertise.query.all()
+    calisma_list = Expertise.query.all()
     form = ExpertiseForm()
-    
     if form.validate_on_submit():
-        expertise = Expertise(
+        calisma = Expertise(
             title=form.title.data,
             description=form.description.data
         )
-        db.session.add(expertise)
+        db.session.add(calisma)
         db.session.commit()
-        flash('Uzmanlık alanı başarıyla eklendi.', 'success')
-        return redirect(url_for('admin_expertise'))
-    
-    return render_template('admin/expertise.html', settings=settings, expertise_list=expertise_list, form=form, now=datetime.now())
+        flash('Çalışma alanı başarıyla eklendi.', 'success')
+        return redirect(url_for('admin_calisma_alanlarimiz'))
+    return render_template('admin/calisma_alanlarimiz.html', settings=settings, calisma_list=calisma_list, form=form, now=datetime.now())
 
-@app.route('/admin/expertise/edit/<int:id>', methods=['GET', 'POST'])
+@app.route('/admin/calisma-alanlarimiz/delete/<int:id>')
 @login_required
-def admin_edit_expertise(id):
-    settings = Settings.query.first()
-    expertise = Expertise.query.get_or_404(id)
-    form = ExpertiseForm(obj=expertise)
-    
-    if form.validate_on_submit():
-        form.populate_obj(expertise)
-        db.session.commit()
-        flash('Uzmanlık alanı başarıyla güncellendi.', 'success')
-        return redirect(url_for('admin_expertise'))
-    
-    return render_template('admin/edit_expertise.html', settings=settings, form=form, expertise=expertise, now=datetime.now())
-
-@app.route('/admin/expertise/delete/<int:id>')
-@login_required
-def admin_delete_expertise(id):
-    expertise = Expertise.query.get_or_404(id)
-    db.session.delete(expertise)
+def admin_delete_calisma(id):
+    calisma = Expertise.query.get_or_404(id)
+    db.session.delete(calisma)
     db.session.commit()
-    flash('Uzmanlık alanı başarıyla silindi.', 'success')
-    return redirect(url_for('admin_expertise'))
+    flash('Çalışma alanı başarıyla silindi.', 'success')
+    return redirect(url_for('admin_calisma_alanlarimiz'))
 
 @app.route('/admin/projects', methods=['GET', 'POST'])
 @login_required
@@ -429,56 +412,14 @@ def admin_delete_lawyer(id):
 def admin_analytics():
     settings = Settings.query.first()
     
-    # Get date range (last 30 days for overview)
-    end_date = date.today()
-    start_date_30d = end_date - timedelta(days=29)  # 29 çünkü bugün dahil 30 gün
-    start_date_7d = end_date - timedelta(days=6)    # 6 çünkü bugün dahil 7 gün
-    
-    # Get daily analytics for both periods
-    daily_stats_30d = DailyAnalytics.query.filter(
-        DailyAnalytics.date >= start_date_30d,
-        DailyAnalytics.date <= end_date
-    ).order_by(DailyAnalytics.date.desc()).all()
-    
-    # Get last 7 days stats for the table
-    daily_stats_7d = DailyAnalytics.query.filter(
-        DailyAnalytics.date >= start_date_7d,
-        DailyAnalytics.date <= end_date
-    ).order_by(DailyAnalytics.date.desc()).all()
-    
-    # Get today's stats
-    today_stats = DailyAnalytics.query.filter_by(date=end_date).first()
-    
-    # Calculate totals for the 30-day period
-    total_visits = sum(stat.total_visits for stat in daily_stats_30d)
-    total_unique_visitors = sum(stat.unique_visitors for stat in daily_stats_30d)
-    total_mobile_visits = sum(stat.mobile_visits for stat in daily_stats_30d)
-    total_desktop_visits = sum(stat.desktop_visits for stat in daily_stats_30d)
-    
-    # Get most visited pages today
-    if today_stats:
-        page_visits = {
-            'Anasayfa': today_stats.home_page_visits,
-            'Hakkımızda': today_stats.about_page_visits,
-            'İletişim': today_stats.contact_page_visits,
-            'Makaleler': today_stats.articles_page_visits,
-            'Uzmanlık Alanları': today_stats.practice_areas_visits
-        }
-    else:
-        page_visits = {}
+    # Tüm zamanların benzersiz IP sayısı
+    total_unique_visitors = db.session.query(
+        db.func.count(db.distinct(VisitorLog.ip_address))
+    ).scalar()
     
     return render_template('admin/analytics.html',
                          settings=settings,
-                         daily_stats=daily_stats_7d,  # Changed to 7-day stats for table
-                         today_stats=today_stats,
-                         total_visits=total_visits,
                          total_unique_visitors=total_unique_visitors,
-                         total_mobile_visits=total_mobile_visits,
-                         total_desktop_visits=total_desktop_visits,
-                         page_visits=page_visits,
-                         start_date=start_date_30d,  # For overview cards
-                         start_date_7d=start_date_7d,  # For daily stats table
-                         end_date=end_date,
                          now=datetime.now())
 
 @app.route('/admin/visitor-logs')
@@ -488,9 +429,20 @@ def admin_visitor_logs():
     page = request.args.get('page', 1, type=int)
     per_page = 50
     
-    # Get visitor logs with pagination
-    logs = VisitorLog.query.order_by(VisitorLog.visit_time.desc()).paginate(
-        page=page, per_page=per_page, error_out=False)
+    # Önce sıralama, sonra sayfalama
+    base_query = VisitorLog.query.order_by(VisitorLog.visit_time.desc())
+    
+    # Sayfalama yap
+    logs = base_query.paginate(
+        page=page, 
+        per_page=per_page,
+        error_out=False
+    )
+    
+    # Toplam kayıt sayısını 1000 ile sınırla
+    if logs.total > 1000:
+        logs.total = 1000
+        logs.pages = (1000 + per_page - 1) // per_page
     
     return render_template('admin/visitor_logs.html',
                          settings=settings,

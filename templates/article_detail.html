@@ -40,18 +40,20 @@
                     
                     {% for recent in recent_articles %}
                     <div class="recent-article">
-                        {% if recent.image %}
-                        <img src="{{ url_for('static', filename='uploads/' + recent.image) }}" alt="{{ recent.title }}" class="recent-article-image">
-                        {% else %}
-                        <div class="recent-article-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="fas fa-file-alt text-muted"></i>
-                        </div>
-                        {% endif %}
-                        <div>
+                        <div class="recent-article-content">
                             <h4 class="recent-article-title">
                                 <a href="{{ url_for('makale_detay', id=recent.id) }}">{{ recent.title }}</a>
                             </h4>
-                            <div class="recent-article-date">{{ recent.date.strftime('%d.%m.%Y') }}</div>
+                            <div class="recent-article-meta">
+                                <span class="recent-article-date">
+                                    <i class="far fa-calendar-alt me-1"></i>{{ recent.date.strftime('%d.%m.%Y') }}
+                                </span>
+                                {% if recent.category %}
+                                <span class="recent-article-category ms-2">
+                                    <i class="fas fa-tag me-1"></i>{{ category_map[recent.category] if recent.category in category_map else recent.category }}
+                                </span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% endfor %}

@@ -62,9 +62,9 @@
                         <i class="fas fa-info-circle me-2"></i> Hakkımızda
                     </a>
                 </li>
-                <li {% if request.endpoint == 'admin_expertise' %}class="active"{% endif %}>
-                    <a href="{{ url_for('admin_expertise') }}">
-                        <i class="fas fa-gavel me-2"></i> Uzmanlık Alanları
+                <li {% if request.endpoint == 'admin_calisma_alanlarimiz' %}class="active"{% endif %}>
+                    <a href="{{ url_for('admin_calisma_alanlarimiz') }}">
+                        <i class="fas fa-briefcase"></i> Çalışma Alanlarımız
                     </a>
                 </li>
                 <li {% if request.endpoint == 'admin_projects' %}class="active"{% endif %}>
