@@ -1,0 +1,98 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Avukat Düzenle{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="form-container">
+        <h1 class="form-title">Avukat Düzenle</h1>
+        
+        <form method="POST" action="{{ url_for('admin_edit_lawyer', id=lawyer.id) }}" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-12 text-center mb-4">
+                    {% if lawyer.photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + lawyer.photo) }}" alt="{{ lawyer.name }}" class="profile-image" id="preview-photo">
+                    {% else %}
+                    <div class="profile-image bg-light d-flex align-items-center justify-content-center" id="preview-photo-container">
+                        <i class="fas fa-user-tie text-muted" style="font-size: 2rem;"></i>
+                    </div>
+                    <img src="" alt="Fotoğraf" class="profile-image" id="preview-photo" style="display: none;">
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">Ad Soyad</label>
+                    {{ form.name(class="form-control", placeholder="Ad Soyad") }}
+                    {% if form.name.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.name.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="title" class="form-label">Ünvan</label>
+                    {{ form.title(class="form-control", placeholder="Ünvan") }}
+                    {% if form.title.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mb-3">
+                    <label for="bio" class="form-label">Biyografi</label>
+                    {{ form.bio(class="form-control", rows=5, placeholder="Biyografi") }}
+                    {% if form.bio.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.bio.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="order" class="form-label">Sıralama</label>
+                    {{ form.order(class="form-control", placeholder="Sıralama") }}
+                    {% if form.order.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.order.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="photo" class="form-label">Fotoğraf</label>
+                    {{ form.photo(class="form-control", data_preview="preview-photo") }}
+                    {% if form.photo.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.photo.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small class="text-muted">Desteklenen formatlar: JPG, PNG</small>
+                </div>
+                
+                <div class="col-md-12 mt-3">
+                    <button type="submit" class="btn btn-admin btn-admin-primary">
+                        <i class="fas fa-save me-2"></i> Kaydet
+                    </button>
+                    <a href="{{ url_for('admin_lawyers') }}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times me-2"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

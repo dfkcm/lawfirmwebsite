@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80" viewBox="0 0 200 80">
+  <style>
+    .logo-text { font: bold 24px 'Arial', sans-serif; fill: #1a3263; }
+    .logo-icon { fill: #1a3263; stroke: none; }
+    .logo-accent { fill: #c3a47f; }
+  </style>
+  
+  <!-- Gavel Icon -->
+  <g transform="translate(10, 20)">
+    <path class="logo-icon" d="M25,0 L35,0 L35,5 L45,15 L40,20 L30,10 L30,35 L25,35 Z" />
+    <rect class="logo-accent" x="10" y="35" width="30" height="10" rx="2" />
+    <path class="logo-icon" d="M15,45 L15,50 L35,50 L35,45 Z" />
+  </g>
+  
+  <!-- Text -->
+  <text x="65" y="35" class="logo-text">KILINÇ</text>
+  <text x="65" y="55" class="logo-text" style="font-size: 16px;">HUKUK</text>
+</svg>

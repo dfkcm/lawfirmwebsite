@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}İletişim{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="hero" style="background-image: url('https://images.unsplash.com/photo-1564510714747-69c3bc1fab41?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
+    <div class="hero-content">
+        <h1 class="hero-title">İletişim</h1>
+        <p class="hero-subtitle">Bizimle iletişime geçin</p>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section">
+    <div class="section-content">
+        <div class="contact-content">
+            <div class="contact-info">
+                <h2 class="contact-title">İletişim Bilgileri</h2>
+                
+                {% if user %}
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="contact-label">İsim</div>
+                        <div class="contact-value">{{ user.full_name }}</div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <div class="contact-label">E-posta</div>
+                        <div class="contact-value">{{ user.email }}</div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <div class="contact-label">Telefon</div>
+                        <div class="contact-value">{{ user.phone }}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="social-links">
+                    <a href="{{ social.facebook }}" class="social-link" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="{{ social.instagram }}" class="social-link" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="{{ social.twitter }}" class="social-link" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h2 class="contact-title">Mesaj Gönder</h2>
+                
+                <form method="POST" action="{{ url_for('iletisim') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <div class="form-group">
+                        <label for="full_name" class="form-label">Adınız Soyadınız</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">E-posta Adresiniz</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Konu</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">Mesajınız</label>
+                        <textarea class="form-control" id="message" name="message" rows="5" required maxlength="2000" oninput="updateCharCount()"></textarea>
+                        <div id="char-count" style="font-size:0.95em; color:#888; margin-top:4px; text-align:right;">0 / 2000</div>
+                    </div>
+                    
+                    <div class="captcha-container">
+                        <div>
+                            <label for="captcha" class="form-label">Güvenlik Kodu</label>
+                            <img src="/captcha" alt="CAPTCHA" class="captcha-image">
+                        </div>
+                        <div class="refresh-captcha" title="Yenile">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="captcha" name="captcha" required placeholder="Güvenlik kodunu girin">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Gönder</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+function updateCharCount() {
+    var textarea = document.getElementById('message');
+    var count = textarea.value.length;
+    var info = document.getElementById('char-count');
+    info.textContent = count + ' / 2000';
+    if(count >= 2000) {
+        textarea.value = textarea.value.substring(0, 2000);
+        info.style.color = '#dc3545';
+    } else {
+        info.style.color = '#888';
+    }
+}
+</script>
+<style>
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+</style>
+{% endblock %}
+{% endblock %}

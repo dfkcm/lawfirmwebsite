@@ -1,0 +1,57 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Mesajlar{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Mesajlar</h1>
+    </div>
+    
+    <div class="table-container">
+        {% if messages %}
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="20%">Gönderen</th>
+                        <th width="15%">E-posta</th>
+                        <th width="20%">Konu</th>
+                        <th width="10%">IP Adresi</th>
+                        <th width="15%">Tarih</th>
+                        <th width="15%">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages %}
+                    <tr>
+                        <td>{{ message.id }}</td>
+                        <td>{{ message.full_name }}</td>
+                        <td>{{ message.email }}</td>
+                        <td>{{ message.subject }}</td>
+                        <td>{{ message.ip_address or 'Bilinmiyor' }}</td>
+                        <td>{{ message.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td class="action-buttons">
+                            <a href="{{ url_for('admin_view_message', id=message.id) }}" class="action-btn action-btn-view">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </a>
+                            <a href="{{ url_for('admin_delete_message', id=message.id) }}" class="action-btn action-btn-delete delete-btn">
+                                <i class="fas fa-trash"></i> Sil
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-envelope-open fa-3x text-muted mb-3"></i>
+            <h3>Henüz mesaj bulunmuyor.</h3>
+            <p>İletişim formu üzerinden gönderilen mesajlar burada görüntülenecektir.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

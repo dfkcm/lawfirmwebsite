@@ -1,0 +1,75 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Çalışma Alanlarımız{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Çalışma Alanlarımız</h1>
+        <button type="button" class="btn btn-admin btn-admin-primary" data-bs-toggle="modal" data-bs-target="#addCalismaModal">
+            <i class="fas fa-plus me-2"></i> Yeni Çalışma Alanı Ekle
+        </button>
+    </div>
+    <div class="table-container">
+        {% if calisma_list %}
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="30%">Başlık</th>
+                        <th width="55%">Açıklama</th>
+                        <th width="10%">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for calisma in calisma_list %}
+                    <tr>
+                        <td>{{ calisma.id }}</td>
+                        <td>{{ calisma.title }}</td>
+                        <td>{{ calisma.description|truncate(100) }}</td>
+                        <td>
+                            <a href="{{ url_for('admin_delete_calisma', id=calisma.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Silmek istediğinize emin misiniz?');">
+                                <i class="fas fa-trash"></i> Sil
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+            <h3>Henüz çalışma alanı eklenmemiş.</h3>
+            <p>Eklemek için "Yeni Çalışma Alanı Ekle" butonunu kullanabilirsiniz.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<!-- Add Calisma Modal -->
+<div class="modal fade" id="addCalismaModal" tabindex="-1" aria-labelledby="addCalismaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCalismaModalLabel">Yeni Çalışma Alanı Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('admin_calisma_alanlarimiz') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Başlık</label>
+                        {{ form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Açıklama</label>
+                        {{ form.description(class="form-control") }}
+                    </div>
+                    <button type="submit" class="btn btn-admin btn-admin-primary">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

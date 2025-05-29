@@ -1,0 +1,97 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Hizmetler{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Hizmetler</h1>
+        <button type="button" class="btn btn-admin btn-admin-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+            <i class="fas fa-plus me-2"></i> Yeni Hizmet Ekle
+        </button>
+    </div>
+    
+    <div class="table-container">
+        {% if services %}
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="25%">Başlık</th>
+                        <th width="50%">Açıklama</th>
+                        <th width="20%">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service in services %}
+                    <tr>
+                        <td>{{ service.id }}</td>
+                        <td>{{ service.title }}</td>
+                        <td>{{ service.description|truncate(100) }}</td>
+                        <td class="action-buttons">
+                            <a href="{{ url_for('admin_edit_service', id=service.id) }}" class="action-btn action-btn-edit">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </a>
+                            <a href="{{ url_for('admin_delete_service', id=service.id) }}" class="action-btn action-btn-delete delete-btn">
+                                <i class="fas fa-trash"></i> Sil
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-cogs fa-3x text-muted mb-3"></i>
+            <h3>Henüz hizmet bulunmuyor.</h3>
+            <p>Eklemek için "Yeni Hizmet Ekle" butonunu kullanabilirsiniz.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Service Modal -->
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addServiceModalLabel">Yeni Hizmet Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin_services') }}">
+                {{ form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Başlık</label>
+                        {{ form.title(class="form-control", placeholder="Hizmet başlığı") }}
+                        {% if form.title.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.title.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Açıklama</label>
+                        {{ form.description(class="form-control rich-editor", rows=5, placeholder="Hizmet açıklaması") }}
+                        {% if form.description.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.description.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-admin btn-admin-primary">Ekle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Avukatlar{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Avukatlar</h1>
+        <button type="button" class="btn btn-admin btn-admin-primary" data-bs-toggle="modal" data-bs-target="#addLawyerModal">
+            <i class="fas fa-plus me-2"></i> Yeni Avukat Ekle
+        </button>
+    </div>
+    
+    <div class="table-container">
+        {% if lawyers %}
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="20%">Ad Soyad</th>
+                        <th width="15%">Ünvan</th>
+                        <th width="40%">Biyografi</th>
+                        <th width="10%">Sıralama</th>
+                        <th width="10%">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lawyer in lawyers %}
+                    <tr>
+                        <td>{{ lawyer.id }}</td>
+                        <td>{{ lawyer.name }}</td>
+                        <td>{{ lawyer.title }}</td>
+                        <td>{{ lawyer.bio|truncate(100) }}</td>
+                        <td>{{ lawyer.order }}</td>
+                        <td class="action-buttons">
+                            <a href="{{ url_for('admin_edit_lawyer', id=lawyer.id) }}" class="action-btn action-btn-edit">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </a>
+                            <a href="{{ url_for('admin_delete_lawyer', id=lawyer.id) }}" class="action-btn action-btn-delete delete-btn">
+                                <i class="fas fa-trash"></i> Sil
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-user-tie fa-3x text-muted mb-3"></i>
+            <h3>Henüz avukat bulunmuyor.</h3>
+            <p>Eklemek için "Yeni Avukat Ekle" butonunu kullanabilirsiniz.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Lawyer Modal -->
+<div class="modal fade" id="addLawyerModal" tabindex="-1" aria-labelledby="addLawyerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLawyerModalLabel">Yeni Avukat Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin_lawyers') }}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Ad Soyad</label>
+                        {{ form.name(class="form-control", placeholder="Ad Soyad") }}
+                        {% if form.name.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Ünvan</label>
+                        {{ form.title(class="form-control", placeholder="Ünvan (örn: Avukat, Stajyer Avukat)") }}
+                        {% if form.title.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.title.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Biyografi</label>
+                        {{ form.bio(class="form-control", rows=5, placeholder="Biyografi") }}
+                        {% if form.bio.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.bio.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="order" class="form-label">Sıralama</label>
+                        {{ form.order(class="form-control", placeholder="Sıralama (küçük sayılar önce gösterilir)") }}
+                        {% if form.order.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.order.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Fotoğraf</label>
+                        {{ form.photo(class="form-control", data_preview="preview-photo") }}
+                        <img id="preview-photo" class="image-preview mt-2" style="display: none;">
+                        {% if form.photo.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.photo.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="text-muted">Desteklenen formatlar: JPG, PNG</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-admin btn-admin-primary">Ekle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

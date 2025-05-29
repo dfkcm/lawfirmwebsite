@@ -1,0 +1,60 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Sosyal Medya Ayarları{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="form-container">
+        <h1 class="form-title">Sosyal Medya Ayarları</h1>
+        
+        <form method="POST" action="{{ url_for('admin_social_media') }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+                <label for="facebook" class="form-label">Facebook</label>
+                {{ form.facebook(class="form-control", placeholder="Facebook URL") }}
+                {% if form.facebook.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.facebook.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="instagram" class="form-label">Instagram</label>
+                {{ form.instagram(class="form-control", placeholder="Instagram URL") }}
+                {% if form.instagram.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.instagram.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="twitter" class="form-label">Twitter</label>
+                {{ form.twitter(class="form-control", placeholder="Twitter URL") }}
+                {% if form.twitter.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.twitter.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-3">
+                <button type="submit" class="btn btn-admin btn-admin-primary">
+                    <i class="fas fa-save me-2"></i> Kaydet
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary ms-2">
+                    <i class="fas fa-times me-2"></i> İptal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

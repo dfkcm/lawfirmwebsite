@@ -1,0 +1,110 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="form-container">
+        <h1 class="form-title">Profil Bilgileri</h1>
+        
+        <form method="POST" action="{{ url_for('admin_profile') }}" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-12 text-center mb-4">
+                    {% if user.profile_photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}" alt="Profil Fotoğrafı" class="profile-image" id="preview-profile">
+                    {% else %}
+                    <div class="profile-image bg-light d-flex align-items-center justify-content-center" id="preview-profile-container">
+                        <i class="fas fa-user text-muted" style="font-size: 2rem;"></i>
+                    </div>
+                    <img src="" alt="Profil Fotoğrafı" class="profile-image" id="preview-profile" style="display: none;">
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="full_name" class="form-label">Ad Soyad</label>
+                    {{ form.full_name(class="form-control", placeholder="Ad Soyad") }}
+                    {% if form.full_name.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.full_name.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="profession" class="form-label">Meslek</label>
+                    {{ form.profession(class="form-control", placeholder="Meslek") }}
+                    {% if form.profession.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.profession.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">E-posta</label>
+                    {{ form.email(class="form-control", placeholder="E-posta") }}
+                    {% if form.email.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Telefon</label>
+                    {{ form.phone(class="form-control", placeholder="Telefon") }}
+                    {% if form.phone.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.phone.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mb-3">
+                    <label for="description" class="form-label">Açıklama</label>
+                    {{ form.description(class="form-control", rows=5, placeholder="Açıklama") }}
+                    {% if form.description.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-12 mb-3">
+                    <label for="profile_photo" class="form-label">Profil Fotoğrafı</label>
+                    {{ form.profile_photo(class="form-control", data_preview="preview-profile") }}
+                    {% if form.profile_photo.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.profile_photo.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small class="text-muted">Desteklenen formatlar: JPG, PNG</small>
+                </div>
+                
+                <div class="col-md-12 mt-3">
+                    <button type="submit" class="btn btn-admin btn-admin-primary">
+                        <i class="fas fa-save me-2"></i> Kaydet
+                    </button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times me-2"></i> İptal
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

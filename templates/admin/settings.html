@@ -1,0 +1,84 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Site Ayarları{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="form-container">
+        <h1 class="form-title">Site Ayarları</h1>
+        
+        <form method="POST" action="{{ url_for('admin_settings') }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+                <label for="site_name" class="form-label">Site Adı</label>
+                {{ form.site_name(class="form-control", placeholder="Site adı") }}
+                {% if form.site_name.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.site_name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="site_description" class="form-label">Site Açıklaması</label>
+                {{ form.site_description(class="form-control", rows=3, placeholder="Site açıklaması") }}
+                {% if form.site_description.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.site_description.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="site_keywords" class="form-label">Site Anahtar Kelimeleri</label>
+                {{ form.site_keywords(class="form-control", placeholder="Virgülle ayrılmış anahtar kelimeler") }}
+                {% if form.site_keywords.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.site_keywords.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="site_author" class="form-label">Site Yazarı</label>
+                {{ form.site_author(class="form-control", placeholder="Site yazarı") }}
+                {% if form.site_author.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.site_author.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="site_footer" class="form-label">Footer Yazısı</label>
+                {{ form.site_footer(class="form-control", placeholder="Footer yazısı") }}
+                {% if form.site_footer.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.site_footer.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-3">
+                <button type="submit" class="btn btn-admin btn-admin-primary">
+                    <i class="fas fa-save me-2"></i> Kaydet
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary ms-2">
+                    <i class="fas fa-times me-2"></i> İptal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

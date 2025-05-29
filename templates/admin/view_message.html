@@ -1,0 +1,51 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Mesaj Detayı{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="form-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="form-title">Mesaj Detayı</h1>
+            <div>
+                <a href="{{ url_for('admin_messages') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i> Mesajlara Dön
+                </a>
+                <a href="{{ url_for('admin_delete_message', id=message.id) }}" class="btn btn-danger ms-2 delete-btn">
+                    <i class="fas fa-trash me-2"></i> Mesajı Sil
+                </a>
+            </div>
+        </div>
+        
+        <div class="message-item">
+            <div class="message-header">
+                <div class="message-sender">
+                    <strong>Gönderen:</strong> {{ message.full_name }}
+                </div>
+                <div class="message-date">
+                    <strong>Tarih:</strong> {{ message.date.strftime('%d.%m.%Y %H:%M') }}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <strong>E-posta:</strong> {{ message.email }}
+            </div>
+            
+            <div class="mb-3">
+                <strong>IP Adresi:</strong> {{ message.ip_address or 'Bilinmiyor' }}
+            </div>
+            
+            <div class="mb-3">
+                <strong>Konu:</strong> {{ message.subject }}
+            </div>
+            
+            <div class="message-content">
+                <strong>Mesaj:</strong>
+                <div class="p-3 bg-light mt-2 rounded" style="word-break: break-word; max-width: 100%; white-space: pre-line;">
+                    {{ message.message.replace('\n', '<br>')|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
