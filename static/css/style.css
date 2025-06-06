@@ -822,16 +822,18 @@ a:hover {
 
 /* Contact Section */
 .contact-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
 }
 
 .contact-info {
+    flex: 1 1 280px;
     border-radius: 0.5rem;
     padding: 2rem;
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .contact-title {
@@ -885,9 +887,10 @@ a:hover {
 }
 
 .contact-form {
-    background-color: white;
+    flex: 1 1 280px;
+    background-color: #fff;
     border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     padding: 2rem;
 }
 
@@ -932,6 +935,13 @@ a:hover {
 .refresh-captcha {
     cursor: pointer;
     color: var(--primary-color);
+}
+
+.char-count {
+    font-size: 0.95em;
+    color: #888;
+    margin-top: 4px;
+    text-align: right;
 }
 
 .submit-btn {
