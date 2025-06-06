@@ -23,7 +23,7 @@ def admin_login():
         admin = Admin.query.filter_by(username=form.username.data).first()
         
         if admin and check_password_hash(admin.password_hash, form.password.data):
-            login_user(admin)
+            login_user(admin, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page or url_for('admin_dashboard'))
         else:
