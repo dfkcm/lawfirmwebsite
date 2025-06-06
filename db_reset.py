@@ -14,9 +14,9 @@ def init_db():
         # Default admin kullanıcısını ekle
         if Admin.query.count() == 0:
             admin = Admin(
-                username="admin",
+                username=os.environ.get("ADMIN_USER", "admin"),
                 email="admin@kilinchukuk.com",
-                password_hash=generate_password_hash("MS")
+                password_hash=generate_password_hash(os.environ.get("ADMIN_PASS", "MS"))
             )
             db.session.add(admin)
             print("Default admin kullanıcısı oluşturuldu.")
