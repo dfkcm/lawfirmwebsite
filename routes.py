@@ -242,20 +242,32 @@ def iletisim():
     
     # Initialize contact form
     form = ContactForm()
-    
+
     # Process contact form submission
     if request.method == 'POST':
+        form = ContactForm(request.form)
+
         # Validate CSRF token
         form_token = request.form.get('csrf_token')
         if not form_token or form_token != session['csrf_token']:
             flash('Güvenlik doğrulaması başarısız oldu.', 'danger')
-            return redirect(url_for('iletisim'))
-        
+            session['captcha_code'] = generate_captcha_code()
+            return render_template('contact.html',
+                                 settings=settings,
+                                 user=user,
+                                 social=social,
+                                 form=form)
+
         # Validate captcha
         captcha_input = request.form.get('captcha')
         if not captcha_input or captcha_input != session.get('captcha_code'):
             flash('Güvenlik kodu hatalı.', 'danger')
-            return redirect(url_for('iletisim'))
+            session['captcha_code'] = generate_captcha_code()
+            return render_template('contact.html',
+                                 settings=settings,
+                                 user=user,
+                                 social=social,
+                                 form=form)
         
         # Create a new contact message
         new_message = Contact(

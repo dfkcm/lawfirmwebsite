@@ -52,19 +52,19 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <label for="full_name" class="form-label">Adınız Soyadınız</label>
-                        <input type="text" class="form-control" id="full_name" name="full_name" required>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ request.form.get('full_name', '') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="email" class="form-label">E-posta Adresiniz</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ request.form.get('email', '') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="subject" class="form-label">Konu</label>
-                        <input type="text" class="form-control" id="subject" name="subject" required>
+                        <input type="text" class="form-control" id="subject" name="subject" value="{{ request.form.get('subject', '') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="message" class="form-label">Mesajınız</label>
-                        <textarea class="form-control" id="message" name="message" rows="5" maxlength="2000" oninput="updateCharCount()" required></textarea>
+                        <textarea class="form-control" id="message" name="message" rows="5" maxlength="2000" oninput="updateCharCount()" required>{{ request.form.get('message', '') }}</textarea>
                         <div id="char-count" class="char-count">0 / 2000</div>
                     </div>
                     <div class="captcha-container">
@@ -99,6 +99,7 @@ function updateCharCount() {
         info.style.color = '#888';
     }
 }
+document.addEventListener('DOMContentLoaded', updateCharCount);
 </script>
 {% endblock %}
 {% endblock %}
