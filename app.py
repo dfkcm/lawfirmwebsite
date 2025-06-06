@@ -68,9 +68,9 @@ with app.app_context():
         if not Admin.query.first():
             from werkzeug.security import generate_password_hash
             admin = Admin()
-            admin.username = 'admin'
+            admin.username = os.environ.get('ADMIN_USER', 'admin')
             admin.email = 'admin@admin.com'
-            admin.password_hash = generate_password_hash('MS')
+            admin.password_hash = generate_password_hash(os.environ.get('ADMIN_PASS', 'MS'))
             db.session.add(admin)
             db.session.commit()
             logging.info("Created default admin user")
