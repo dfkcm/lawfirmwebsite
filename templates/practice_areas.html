@@ -1,28 +1,25 @@
 {% extends 'base.html' %}
-
 {% block title %}Uzmanlık Alanları{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
-<section class="hero" style="background-image: url('https://images.unsplash.com/photo-1505663912202-ac22d4cb3707?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
-    <div class="hero-content">
-        <h1 class="hero-title">Uzmanlık Alanları</h1>
-        <p class="hero-subtitle">Hukuki alanlarımız ve çözüm odaklı yaklaşımımız</p>
+<section class="hero" style="background-image:url('https://images.unsplash.com/photo-1505663912202-ac22d4cb3707?auto=format&fit=crop&w=2000&q=80');">
+    <div class="container">
+        <h1>Uzmanlık Alanları</h1>
     </div>
 </section>
 
-<!-- Çalışma Alanlarımız Content -->
-<section class="section">
-    <div class="section-content">
-        <div class="calisma-list">
-            {% for calisma in calisma_list %}
-            <div class="calisma-item">
-                <h3 class="calisma-title">{{ calisma.title }}</h3>
-                <div class="calisma-divider"></div>
-                <p class="calisma-description">{{ calisma.description }}</p>
+<div class="container my-5">
+    <div class="row">
+        {% for calisma in calisma_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ calisma.title }}</h5>
+                    <p class="card-text">{{ calisma.description }}</p>
+                </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
-</section>
+</div>
 {% endblock %}
